@@ -6,10 +6,40 @@ using System;
 
 public class Game : MonoBehaviour
 {
+
+    [SerializeField] CanvasWithTracker mainCanvas;
+    [SerializeField] CanvasNewCharacter newCharacter;
+    Creators creators;
+
+    private void Start()
+    {
+        StartCoroutine(StartTracker());
+        
+    }
+
+    private void CreatenewCharacter()
+    {
+        mainCanvas.gameObject.SetActive(false);
+        CanvasNewCharacter canvasNew=  Instantiate(newCharacter);
+        canvasNew.SetParams(creators, AddCharacter);
+    }
+
+    private void AddCharacter(Character character)
+    {
+        mainCanvas.gameObject.SetActive(true);
+        mainCanvas.AddCharacterFromList(character);
+    }
+    IEnumerator StartTracker()
+    {
+        creators = new Creators();
+        yield return new WaitForSeconds(1);
+        mainCanvas.SetParams(creators, CreatenewCharacter);
+    }
+    /*
     [SerializeField] TMP_InputField head, leftHand, rightHand, body, leftLeg, rightLeg, health, bonusAgility, bonusFatigue, textName, clip;
     [SerializeField] GameObject panel, content, startB, finishB, nextB;
-    [SerializeField] Character character;
-    private List<Character> characters = new List<Character>();
+    //[SerializeField] Character character;
+    //private List<Character> characters = new List<Character>();
     private List<TMP_InputField> inputs = new List<TMP_InputField>();
     public static event Action BattleStarted;
     public static event Action BattleFinished;
@@ -113,5 +143,5 @@ public class Game : MonoBehaviour
             NextTurn();
         }
 
-    }
+    }*/
 }
