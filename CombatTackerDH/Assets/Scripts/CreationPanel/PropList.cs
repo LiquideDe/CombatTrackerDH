@@ -17,7 +17,8 @@ public class PropList : MonoBehaviour
     public void SetParams(List<PropertyCharacter> properties, ReturnProp returnProp, PanelCreation panelCreationExample)
     {
         this.panelCreationExample = panelCreationExample;
-        foreach(PropertyCharacter prop in properties)
+        this.returnProp = returnProp;
+        foreach (PropertyCharacter prop in properties)
         {
             panelProps.Add(Instantiate(panelPropExample, content));
             panelProps[^1].SetParams(prop, ReturnProperty);

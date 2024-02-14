@@ -15,6 +15,7 @@ public class Character
     private List<PropertyCharacter> talents = new List<PropertyCharacter>();
     private List<PropertyCharacter> features = new List<PropertyCharacter>();
     private List<PropertyCharacter> psyPowers = new List<PropertyCharacter>();
+    private List<PropertyCharacter> mechImplants = new List<PropertyCharacter>();
     private List<Armor> armors = new List<Armor>();
     private List<Weapon> weapons = new List<Weapon>();
     private List<Equipment> equipments = new List<Equipment>();
@@ -30,11 +31,12 @@ public class Character
     public List<PropertyCharacter> Talents { get => talents; set => talents = value; }
     public List<PropertyCharacter> Features { get => features; set => features = value; }
     public List<PropertyCharacter> PsyPowers { get => psyPowers; set => psyPowers = value; }
+    public List<PropertyCharacter> MechImplants { get => mechImplants; }
     public List<Armor> Armors { get => armors; set => armors = value; }
     public List<Weapon> Weapons { get => weapons; set => weapons = value; }
     public List<Equipment> Equipments { get => equipments; set => equipments = value; }
     public int Wounds { get => wounds; set => wounds = value; }
-    public int Treate { get => treate; set => treate = value; }
+    public int Treate { get => treate; set => treate = value; }    
 
     public Character()
     {
@@ -56,6 +58,7 @@ public class Character
         talents.AddRange(LoadPropertyFromString(loadCharacter.talents, creators.Talents));
         features.AddRange(LoadPropertyFromString(loadCharacter.features, creators.Features));
         psyPowers.AddRange(LoadPropertyFromString(loadCharacter.psyPowers, creators.PsyPowers));
+        mechImplants.AddRange(LoadPropertyFromString(loadCharacter.implants, creators.MechImplants));
 
         List<Equipment> futureArmors = new List<Equipment>();
         futureArmors.AddRange(LoadEquipmentFromString(loadCharacter.armors, creators.Equipments));
@@ -207,6 +210,9 @@ public class Character
 
         saveLoad.psyPowers = "";
         saveLoad.psyPowers = PackingPropInText(psyPowers);
+
+        saveLoad.implants = "";
+        saveLoad.implants = PackingPropInText(mechImplants);
 
         int[] tempSkills = new int[skills.Count];
         for(int i = 0; i < skills.Count; i++)

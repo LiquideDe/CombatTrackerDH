@@ -13,6 +13,7 @@ public class Creators
     private List<PropertyCharacter> features = new List<PropertyCharacter>();
     private List<PropertyCharacter> psyPowers = new List<PropertyCharacter>();
     private List<PropertyCharacter> weaponProp = new List<PropertyCharacter>();
+    private List<PropertyCharacter> mechImplants = new List<PropertyCharacter>();
     private List<Character> characters = new List<Character>();
 
     public Creators()
@@ -22,6 +23,8 @@ public class Creators
         features.AddRange(GetListProperty((Directory.GetDirectories($"{Application.dataPath}/StreamingAssets/Features")).ToList()));
         psyPowers.AddRange(GetListProperty((Directory.GetDirectories($"{Application.dataPath}/StreamingAssets/PsyPowers")).ToList()));
         weaponProp.AddRange(GetListProperty((Directory.GetDirectories($"{Application.dataPath}/StreamingAssets/PropertiesOfWeapon")).ToList()));
+        mechImplants.AddRange(GetListProperty((Directory.GetDirectories($"{Application.dataPath}/StreamingAssets/Implants")).ToList()));
+
         string[] things = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Equipments" + "/Things", "*.JSON");
         foreach (string thing in things)
         {
@@ -52,6 +55,14 @@ public class Creators
             string[] data = File.ReadAllLines(range);
             JSONRangeReader rangeReader = JsonUtility.FromJson<JSONRangeReader>(data[0]);
             equipments.Add(new Weapon(rangeReader));
+        }
+
+        string[] grenades = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Equipments" + "/Weapons/Grenade", "*.JSON");
+        foreach (string grenade in grenades)
+        {
+            string[] data = File.ReadAllLines(grenade);
+            JSONGrenadeReader grenadeReader = JsonUtility.FromJson<JSONGrenadeReader>(data[0]);
+            equipments.Add(new Weapon(grenadeReader));
         }
         string[] chars = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Characters", "*.JSON");
         foreach (string character in chars)
@@ -107,6 +118,20 @@ public class Creators
         }
         return txt;
     }
+
+    public Character GetCharacterByName(string name)
+    {
+        foreach(Character character in characters)
+        {
+            if(string.Compare(character.InternalName, name, true) == 0)
+            {
+                return character;
+            }
+        }
+
+        Debug.Log($"!!!!! Не смогли найти '{name}' !!!!!!!");
+        return null;
+    }
     public List<Equipment> Equipments { get => equipments; }
     public List<PropertyCharacter> Skills { get => skills; }
     public List<PropertyCharacter> Talents { get => talents; }
@@ -114,4 +139,5 @@ public class Creators
     public List<PropertyCharacter> PsyPowers { get => psyPowers; }
     public List<Character> Characters { get => characters; }
     public List<PropertyCharacter> WeaponProp { get => weaponProp; }
+    public List<PropertyCharacter> MechImplants { get => mechImplants; }
 }

@@ -17,6 +17,7 @@ public class CanvasNewCharacter : MonoBehaviour
     private List<PanelWithInfo> propPanels = new List<PanelWithInfo>();
     public void SetParams(Creators creators, ReturnCharacter returnCharacter)
     {
+        gameObject.SetActive(true);
         this.returnCharacter = returnCharacter;
         this.creators = creators;
         creationCharacter.SetParams();
@@ -39,12 +40,13 @@ public class CanvasNewCharacter : MonoBehaviour
     }
     private void AddTalent(PropertyCharacter property)
     {
-        creationCharacter.Character.Talents.Add(property);
-        AddProp(property);
+        creationCharacter.Character.Talents.Add(property);        
         if (!CheckPropForExisting(creators.Talents, property))
         {
             SaveProperty($"{Application.dataPath}/StreamingAssets/Talents/{property.Name}", property);
+            creators.Talents.Add(property);
         }
+        AddProp(property);
     }
     public void ShowFeature()
     {
@@ -54,11 +56,29 @@ public class CanvasNewCharacter : MonoBehaviour
     private void AddFeature(PropertyCharacter property)
     {
         creationCharacter.Character.Features.Add(property);
-        AddProp(property);
+        
         if (!CheckPropForExisting(creators.Features, property))
         {
             SaveProperty($"{Application.dataPath}/StreamingAssets/Features/{property.Name}", property);
+            creators.Features.Add(property);
         }
+        AddProp(property);
+    }
+    public void ShowImplants()
+    {
+        PropList list = Instantiate(propListExample, transform);
+        list.SetParams(creators.MechImplants, AddImplants, panelCreationProp);
+    }
+    private void AddImplants(PropertyCharacter property)
+    {
+        creationCharacter.Character.MechImplants.Add(property);
+
+        if (!CheckPropForExisting(creators.MechImplants, property))
+        {
+            SaveProperty($"{Application.dataPath}/StreamingAssets/Implants/{property.Name}", property);
+            creators.MechImplants.Add(property);
+        }
+        AddProp(property);
     }
     public void ShowPsy()
     {
@@ -68,11 +88,13 @@ public class CanvasNewCharacter : MonoBehaviour
     private void AddPsy(PropertyCharacter property)
     {
         creationCharacter.Character.PsyPowers.Add(property);
-        AddProp(property);
+        
         if (!CheckPropForExisting(creators.PsyPowers, property))
         {
             SaveProperty($"{Application.dataPath}/StreamingAssets/PsyPowers/{property.Name}", property);
+            creators.PsyPowers.Add(property);
         }
+        AddProp(property);
     }
     public void ShowEquipment()
     {
@@ -85,7 +107,7 @@ public class CanvasNewCharacter : MonoBehaviour
                 propEquipments.Add(new PropertyEquipment(equipment.Name, "", equipment.Weight, equipment.Rarity));
             }            
         }
-        list.SetParams(propEquipments, AddEquipment, panelCreationProp);
+        list.SetParams(propEquipments, AddEquipment, panelCreationEquipment);
     }
     private void AddEquipment(PropertyCharacter property)
     {
@@ -106,6 +128,7 @@ public class CanvasNewCharacter : MonoBehaviour
             List<string> data = new List<string>();
             data.Add(JsonUtility.ToJson(jSONEquipment));
             File.WriteAllLines($"{Application.dataPath}/StreamingAssets/Equipments/Things/{equipment.Name}.JSON", data);
+            creators.Equipments.Add(equipment);
         }
         AddProp(property);
     }
@@ -149,6 +172,7 @@ public class CanvasNewCharacter : MonoBehaviour
             List<string> data = new List<string>();
             data.Add(JsonUtility.ToJson(jSONArmor));
             File.WriteAllLines($"{Application.dataPath}/StreamingAssets/Equipments/Armor/{propArmor.Name}.JSON", data);
+            creators.Equipments.Add(armor);
         }
         AddProp(property);
     }
@@ -192,6 +216,8 @@ public class CanvasNewCharacter : MonoBehaviour
             List<string> data = new List<string>();
             data.Add(JsonUtility.ToJson(jSONMelee));
             File.WriteAllLines($"{Application.dataPath}/StreamingAssets/Equipments/Weapons/Melee/{propArmor.Name}.JSON", data);
+
+            creators.Equipments.Add(weapon);
         }
         creationCharacter.AddWeapon(weapon);
     }
@@ -239,6 +265,7 @@ public class CanvasNewCharacter : MonoBehaviour
             List<string> data = new List<string>();
             data.Add(JsonUtility.ToJson(jSONGun));
             File.WriteAllLines($"{Application.dataPath}/StreamingAssets/Equipments/Weapons/Range/{propGun.Name}.JSON", data);
+            creators.Equipments.Add(weapon);
         }
         creationCharacter.AddWeapon(weapon);
     }
@@ -282,13 +309,15 @@ public class CanvasNewCharacter : MonoBehaviour
             List<string> data = new List<string>();
             data.Add(JsonUtility.ToJson(jSONGrenade));
             File.WriteAllLines($"{Application.dataPath}/StreamingAssets/Equipments/Weapons/Grenade/{propArmor.Name}.JSON", data);
+            creators.Equipments.Add(weapon);
         }
         creationCharacter.AddWeapon(weapon);
     }
     private void AddProp(PropertyCharacter property)
     {
+        PropertyCharacter propertyCharacter = new PropertyCharacter(property.Name, "");
         propPanels.Add(Instantiate(panelInfoExample, contentProp));
-        propPanels[^1].SetParams(property, RemoveProperty);
+        propPanels[^1].SetParams(propertyCharacter, RemoveProperty);
     }
 
     private bool CheckPropForExisting(List<PropertyCharacter> properties, PropertyCharacter property)
@@ -340,7 +369,61 @@ public class CanvasNewCharacter : MonoBehaviour
                 break;
             }
         }
+
+        bool isDelete = false;
+        if(RemoveAnyProperty(name, creationCharacter.Character.Skills))
+        {
+            isDelete = true;
+        }
+        else if(RemoveAnyProperty(name, creationCharacter.Character.Talents))
+        {
+            isDelete = true;
+        }
+        else if(RemoveAnyProperty(name, creationCharacter.Character.Features))
+        {
+            isDelete = true;
+        }
+        else if(RemoveAnyProperty(name, creationCharacter.Character.PsyPowers))
+        {
+            isDelete = true;
+        }
+        else if (RemoveAnyProperty(name, creationCharacter.Character.MechImplants))
+        {
+            isDelete = true;
+        }
+        else if(RemoveAnyProperty(name, creationCharacter.Character.Equipments))
+        {
+            isDelete = true;
+        }
+        else if(RemoveAnyProperty(name, creationCharacter.Character.Armors))
+        {
+            isDelete = true;
+        }
+        else if (RemoveAnyProperty(name, creationCharacter.Character.Weapons))
+        {
+            isDelete = true;
+        }
+
+        Debug.Log($"Delete? {isDelete}");
+
     }
+
+    private bool RemoveAnyProperty<T>(string name, List<T> properties)
+        where T : IName
+    {
+        foreach (T property in properties)
+        {
+            if (string.Compare(name, property.Name, true) == 0)
+            {
+                Debug.Log($"Удаляем найденный {name}");
+                properties.Remove(property);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     private void SaveProperty(string path, PropertyCharacter property)
     {
@@ -362,5 +445,11 @@ public class CanvasNewCharacter : MonoBehaviour
             returnCharacter?.Invoke(creationCharacter.Character);
             Destroy(gameObject);
         }
+    }
+
+    public void Cancel()
+    {
+        returnCharacter?.Invoke(null);
+        Destroy(gameObject);
     }
 }

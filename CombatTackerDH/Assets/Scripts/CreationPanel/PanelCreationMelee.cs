@@ -22,7 +22,7 @@ public class PanelCreationMelee : PanelCreation
         string properties = "";
         foreach(PanelWithInfo panel in propertiesInWeapon)
         {
-            properties += $"{panel.Name},";
+            properties += $"{panel.TextName},";
         }
         properties = DeleteLastChar(properties);
         PropertyMelee melee = new PropertyMelee(inputName.text, "", weight, inputRarity.text, inputClass.text, inputDamage.text, penetration, properties);

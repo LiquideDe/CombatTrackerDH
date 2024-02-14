@@ -19,13 +19,18 @@ public class CanvasWithTracker : MonoBehaviour
     [SerializeField] PanelWithCharacter panelWithCharacter;
     [SerializeField] TMP_InputField inputCharacter, inputFeature;
     [SerializeField] SmallCharacter smallCharacterExample;
+    [SerializeField] SaveBattleScene saveBattle;
+    [SerializeField] LoadBattleScene loadBattle;
     private List<PanelWithInfo> properties = new List<PanelWithInfo>();
     private List<PanelWithCharacter> panelWithCharacters = new List<PanelWithCharacter>();
     private List<CharacterVisual> characterVisuals = new List<CharacterVisual>();
     private List<SmallCharacter> smallCharacters = new List<SmallCharacter>();
+    private Creators creators;
+    private int whoTurn;
 
     public void SetParams(Creators creators, CreateNewCharacter createNewCharacter)
     {
+        this.creators = creators;
         this.createNewCharacter = createNewCharacter;
         CreateProperty(creators.Skills);
         CreateProperty(creators.Features);
@@ -35,7 +40,7 @@ public class CanvasWithTracker : MonoBehaviour
         foreach (Equipment equipment in creators.Equipments)
         {
             properties.Add(Instantiate(featureExample, contentFeatures));
-            properties[^1].SetParams(new PropertyCharacter(equipment.Name, equipment.Description), ShowInfo);
+            properties[^1].SetParams(new PropertyCharacter(equipment.Name, equipment.Description), ShowThisFeature);
         }
 
         foreach(Character character in creators.Characters)
@@ -50,7 +55,7 @@ public class CanvasWithTracker : MonoBehaviour
         foreach(PropertyCharacter property in props)
         {
             properties.Add(Instantiate(featureExample, contentFeatures));
-            properties[^1].SetParams(property, ShowInfo);
+            properties[^1].SetParams(property, ShowThisFeature);
         }
     }
     private void ShowInfo(string description)
@@ -92,7 +97,7 @@ public class CanvasWithTracker : MonoBehaviour
     {
         if(characterVisuals.Count > 1)
         {
-            float step = 1 / (characterVisuals.Count - 1);
+            float step = 1f / (characterVisuals.Count - 1);
             scrollbarCharacters.value = 1 - step * id;
         }        
     }
@@ -124,6 +129,10 @@ public class CanvasWithTracker : MonoBehaviour
                     panel.gameObject.SetActive(false);
                 }
             }
+            else
+            {
+                panel.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -131,4 +140,114 @@ public class CanvasWithTracker : MonoBehaviour
     {
         createNewCharacter?.Invoke();
     }
+
+    public void SaveBattleScene()
+    {
+        var save = Instantiate(saveBattle, transform);
+        save.ShowPanelSave(characterVisuals);
+    }
+
+    public void LoadBattleScene()
+    {
+        var load = Instantiate(loadBattle, transform);
+        load.ShowLoads(AddingCharacters);
+    }
+
+    private void AddingCharacters(List<SaveLoadCharacterNames> characters)
+    {
+        foreach(SaveLoadCharacterNames character in characters)
+        {
+            Character newCharacter = creators.GetCharacterByName(character.internalNamesCharacter);
+            newCharacter.Name = character.nameCharacter;
+            AddCharacterFromList(newCharacter);
+        }
+    }
+    public void ClearListCharacters()
+    {
+        foreach (CharacterVisual character in characterVisuals)
+        {
+            Destroy(character.gameObject);
+        }
+        characterVisuals.Clear();
+        DestroySmallCharacters();
+    }
+
+    private void DestroySmallCharacters()
+    {
+        for (int i = 0; i < smallCharacters.Count; i++)
+        {
+            Destroy(smallCharacters[i].gameObject);
+        }
+
+        smallCharacters.Clear();
+    }
+    public void StartBattle()
+    {
+        whoTurn = 0;
+        foreach(CharacterVisual character in characterVisuals)
+        {
+            character.CalculateInitiative();
+        }
+        characterVisuals.Sort(
+            delegate (CharacterVisual cb1, CharacterVisual cb2)
+            {
+                return cb2.Initiative.CompareTo(cb1.Initiative);
+            }
+            );
+        DestroySmallCharacters();
+        SortingCharacters();
+    }
+
+    private void SortingCharacters()
+    {
+        for (int i = 0; i < characterVisuals.Count; i++)
+        {
+            smallCharacters.Add(Instantiate(smallCharacterExample, contentSmallCharacters));
+            smallCharacters[^1].SetParams(characterVisuals[i].Name, i, ShowThisCharacter);
+            characterVisuals[i].Id = i;
+            characterVisuals[i].transform.SetSiblingIndex(i + 1);
+        }
+    }
+
+    public void NextTurn()
+    {
+        if (whoTurn < characterVisuals.Count)
+        {
+            if (whoTurn > 0)
+            {
+                characterVisuals[whoTurn - 1].CharacterEndTurn();
+                smallCharacters[whoTurn - 1].CharacterEndTurn();
+            }
+            else
+            {
+                characterVisuals[^1].CharacterEndTurn();
+                smallCharacters[^1].CharacterEndTurn();
+            }
+            ShowThisCharacter(whoTurn);
+            characterVisuals[whoTurn].CharacterTurn();
+            smallCharacters[whoTurn].CharacterTurn();
+            whoTurn += 1;
+        }
+        else
+        {
+            whoTurn = 0;
+            NextTurn();
+        }
+
+    }
+
+    public void FinishBattle()
+    {
+        if (whoTurn > 0)
+        {
+            characterVisuals[whoTurn - 1].CharacterEndTurn();
+            smallCharacters[whoTurn - 1].CharacterEndTurn();
+        }
+        else
+        {
+            characterVisuals[^1].CharacterEndTurn();
+            smallCharacters[^1].CharacterEndTurn();
+        }
+    }
+
 }

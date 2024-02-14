@@ -1258,7 +1258,6 @@ MonoBehaviour:
   panelPropExample: {fileID: 2849697377457370841}
   content: {fileID: 8857217662130144111}
   inputSearch: {fileID: 8857217662860636369}
-  panelCreationExample: {fileID: 7056281049910252381, guid: 3bd5c623996476c47816770675b11d35, type: 3}
 --- !u!1 &8857217662089885003
 GameObject:
   m_ObjectHideFlags: 0
@@ -1371,7 +1370,7 @@ MonoBehaviour:
     m_Top: 5
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: 5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -1984,7 +1983,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6754860300406954830}
+        m_TargetAssemblyTypeName: PropList, Assembly-CSharp
+        m_MethodName: SearchProp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []

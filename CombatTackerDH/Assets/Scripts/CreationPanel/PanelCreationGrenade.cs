@@ -11,7 +11,7 @@ public class PanelCreationGrenade : PanelCreationMelee
         string properties = "";
         foreach (PanelWithInfo panel in propertiesInWeapon)
         {
-            properties += $"{panel.Name},";
+            properties += $"{panel.TextName},";
         }
         properties = DeleteLastChar(properties);
 

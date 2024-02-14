@@ -12,7 +12,7 @@ public class PanelCreationCharacter : MonoBehaviour
     [SerializeField] TextMeshProUGUI[] textTotalArmorPoint;
     [SerializeField] TMP_InputField[] inputCharacteristics;
     [SerializeField] TMP_InputField[] inputUnnatCharacteristics;
-    [SerializeField] WeaponVisual weaponVisualExample;
+    [SerializeField] WeaponSimple weaponSimpleExample;
     [SerializeField] Transform contentWeapons;
     int[] armorPoints = new int[6];
     int[] armorAblPoints = new int[6];
@@ -20,7 +20,7 @@ public class PanelCreationCharacter : MonoBehaviour
 
     Character character;
     public Character Character { get => character; }
-    List<WeaponVisual> weapons = new List<WeaponVisual>();
+    List<WeaponSimple> weapons = new List<WeaponSimple>();
 
     public void SetParams()
     {
@@ -29,8 +29,8 @@ public class PanelCreationCharacter : MonoBehaviour
 
     public void AddWeapon(Weapon weapon)
     {
-        weapons.Add(Instantiate(weaponVisualExample, contentWeapons));
-        weapons[^1].SetParams(weapon,null);
+        weapons.Add(Instantiate(weaponSimpleExample, contentWeapons));
+        weapons[^1].SetParams(weapon);
         character.Weapons.Add(weapon);
     }
 
@@ -52,10 +52,21 @@ public class PanelCreationCharacter : MonoBehaviour
         ReCalculatingArmor();
     }
 
-    public void ChangeCharacteristic()
+    public void ChangeToughness()
     {
         CancelSelect();
         ReCalculateToughness();
+    }
+
+    public void ChangeAgility()
+    {
+        CancelSelect();
+        int.TryParse(inputCharacteristics[4].text, out int speed);
+        speed = speed / 10;
+        inputHalf.text = speed.ToString();
+        inputFull.text = $"{speed * 2}";
+        inputNatisk.text = $"{speed * 3}";
+        inputRun.text = $"{speed * 6}";
     }
 
     public void ChangeArmor()
@@ -88,7 +99,7 @@ public class PanelCreationCharacter : MonoBehaviour
         int.TryParse(inputCharacteristics[3].text, out int toughness);
         int.TryParse(inputUnnatCharacteristics[3].text, out int unNatToughness);
         toughness = toughness / 10;
-        if(toughness > unNatToughness)
+        if(unNatToughness == 0)
         {
             bonusToughness = toughness;
         }

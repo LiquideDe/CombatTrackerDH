@@ -1,48 +1,76 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 using System.Linq;
 
-public class WeaponVisual : MonoBehaviour
-{
-    [SerializeField] TextMeshProUGUI textName, textClass, textRange, textRof, textDamage, textPen, textClip, textReload, textWeight, textTrade;
-    [SerializeField] PanelWithInfo panelWithInfoExample;
-    [SerializeField] Transform content;
-    private List<PanelWithInfo> properties = new List<PanelWithInfo>();
+public class WeaponVisual : WeaponSimple
+{    
+    [SerializeField] Button buttonSingle, buttonSemiAuto, buttonAuto, buttonReload;
     public delegate void ShowThisProp(string name);
     ShowThisProp showThisProp;
-    public void SetParams(Weapon weapon, ShowThisProp showThisProp)
+    int clip=0, maxClip, totalAmmo, single=0, semiAuto=0, auto=0;
+
+    public void Init(ShowThisProp showThisProp)
     {
-        gameObject.SetActive(true);
-        textName.text = weapon.Name;
-        textClass.text = weapon.ClassWeapon;
-        if(weapon.TypeEq == Equipment.TypeEquipment.Range)
+        this.showThisProp = showThisProp;
+        if (weapon.TypeEq == Equipment.TypeEquipment.Range)
         {
-            textRange.text = weapon.Range.ToString();
-            textClip.text = weapon.Clip.ToString();
-            textReload.text = weapon.Reload;
-            textRof.text = weapon.Rof;
+            clip = weapon.Clip;
+            maxClip = clip;
+            totalAmmo = clip * 2;
+            List<string> rof = weapon.Rof.Split(new char[] { '/' }).ToList();
+
+            textSingle.text = rof[0];
+            textSemiAuto.text = rof[1];
+            textAuto.text = rof[2];
+            if (buttonSingle != null)
+            {
+                if (rof[0] != "-")
+                {
+                    int.TryParse(rof[0], out single);
+                }
+                else
+                {
+                    buttonSingle.interactable = false;
+                }
+
+                if (rof[1] != "-")
+                {
+                    int.TryParse(rof[1], out semiAuto);
+                }
+                else
+                {
+                    buttonSemiAuto.interactable = false;
+                }
+
+                if (rof[2] != "-")
+                {
+                    int.TryParse(rof[2], out auto);
+                }
+                else
+                {
+                    buttonAuto.interactable = false;
+                }
+            }
+
         }
         else
         {
-            textRange.text = "";
-            textClip.text = "";
-            textReload.text = "";
+            if (buttonSingle != null)
+            {
+                buttonSingle.interactable = false;
+                buttonSemiAuto.interactable = false;
+                buttonAuto.interactable = false;
+                buttonReload.interactable = false;
+            }
         }
 
-        textDamage.text = weapon.Damage;
-        textPen.text = weapon.Penetration.ToString();
-        textWeight.text = weapon.Weight.ToString();
-        textTrade.text = weapon.Rarity;
-        if(weapon.Properties.Length > 1)
+        if (weapon.Properties.Length > 1)
         {
-            List<string> props = new List<string>();
-            props.AddRange(weapon.Properties.Split(new char[] { ',' }).ToList());
-            foreach(string prop in props)
+            foreach (PanelWithInfo prop in properties)
             {
-                properties.Add(Instantiate(panelWithInfoExample, content));
-                properties[^1].SetParams(new PropertyCharacter(prop,""), ShowProperty);
+                prop.RegDelegate(ShowProperty);
             }
         }
     }
@@ -50,5 +78,56 @@ public class WeaponVisual : MonoBehaviour
     private void ShowProperty(string name)
     {
         showThisProp?.Invoke(name);
+    }
+
+    public void ShootSingle()
+    {
+        Shoot(1);
+    }
+
+    public void ShootSemiAuto()
+    {
+        Shoot(semiAuto);
+    }
+
+    public void ShootAuto()
+    {
+        Shoot(auto);
+    }
+
+    private void Shoot(int amount)
+    {
+        if(clip > 0)
+        {
+            if(clip >= amount)
+            {
+                clip -= amount;
+            }
+            else
+            {
+                clip = 0;
+            }
+        }
+        textClip.text = clip.ToString();
+    }
+
+    public void Reload()
+    {
+        if(totalAmmo > 0)
+        {
+            if (totalAmmo >= maxClip)
+            {
+                int raz = maxClip - clip;
+                clip += raz;
+                totalAmmo -= raz;
+            }
+            else
+            {
+                int raz = totalAmmo - clip;
+                clip = raz;
+                totalAmmo -= raz;
+            }
+        }
+        textClip.text = clip.ToString();
     }
 }

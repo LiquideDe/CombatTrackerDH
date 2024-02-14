@@ -16,7 +16,7 @@ public class PanelCreationGun : PanelCreationMelee
         string properties = "";
         foreach (PanelWithInfo panel in propertiesInWeapon)
         {
-            properties += $"{panel.Name},";
+            properties += $"{panel.TextName},";
         }
         properties = DeleteLastChar(properties);
         PropertyGun gun = new PropertyGun(inputName.text, "", weight, inputRarity.text, inputClass.text, inputDamage.text, penetration, properties, range, inputRof.text, clip, inputReload.text);

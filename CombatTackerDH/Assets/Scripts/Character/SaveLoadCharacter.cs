@@ -5,6 +5,6 @@ using System;
 [Serializable]
 public class SaveLoadCharacter
 {
-    public string name, internalName, armorPoints, characteristics, unnaturualChar, skills, talents, features, psyPowers, armors, weapons, equipments, armorPointsAbl, skillsLvl, featuresLvl;
+    public string name, internalName, armorPoints, characteristics, unnaturualChar, skills, talents, features, psyPowers, armors, weapons, equipments, armorPointsAbl, skillsLvl, featuresLvl, implants;
     public int wounds, treate;
 }

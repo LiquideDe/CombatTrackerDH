@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Text.RegularExpressions;
+using System;
 
 public class PanelWithInfo : MonoBehaviour, IPointerDownHandler, IPanel
 {
@@ -12,18 +14,29 @@ public class PanelWithInfo : MonoBehaviour, IPointerDownHandler, IPanel
     [SerializeField] TextMeshProUGUI textName;
     public string Name { get => propertyCharacter.Name; }
     public string Description { get => propertyCharacter.Description; }
+    public string TextName { get => textName.text; }
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        /*
+        Debug.Log($"Отправляем инфу {propertyCharacter.Name}, {propertyCharacter.Description}");
         if(propertyCharacter.Description.Length > 0)
         {
             mouseDown?.Invoke(propertyCharacter.Description);
         }
         else
         {
-            mouseDown?.Invoke(propertyCharacter.Name);
-        }
-        
+            string text = propertyCharacter.Name;
+            string pattern = @"\((.*)\)";
+            text = Regex.Replace(text, pattern, String.Empty);
+
+            mouseDown?.Invoke(text);
+        }*/
+        string text = propertyCharacter.Name;
+        string pattern = @"\((.*)\)";
+        text = Regex.Replace(text, pattern, String.Empty);
+        text = text.Trim();
+        mouseDown?.Invoke(text);
     }
 
     
@@ -35,8 +48,13 @@ public class PanelWithInfo : MonoBehaviour, IPointerDownHandler, IPanel
         textName.text = propertyCharacter.Name;
         if (propertyCharacter.Lvl > 0)
         {
-            textName.text += $" ({propertyCharacter.Lvl})";
+            textName.text += $"({propertyCharacter.Lvl})";
         }
+    }
+
+    public void RegDelegate(MouseDown deleg)
+    {
+        this.mouseDown = deleg;
     }
 
 }
