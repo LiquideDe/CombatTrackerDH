@@ -1,431 +1,233 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEngine;
 
-public class Character
+public class Character : IName
 {
-    private string name, internalName;
-    private int[] armorPoints = new int[6]; //0-голова, 1 - Л. Рука, 2 - П. Рука, 3 - Тело, 4 - Л. Нога, 5 - П. Нога
-    private int[] armorPointsAbl = new int[6];
-    private int[] characteristics = new int[10];
-    private int[] unnaturualChar = new int[10];
-    private List<PropertyCharacter> skills = new List<PropertyCharacter>();
-    private List<PropertyCharacter> talents = new List<PropertyCharacter>();
-    private List<PropertyCharacter> features = new List<PropertyCharacter>();
-    private List<PropertyCharacter> psyPowers = new List<PropertyCharacter>();
-    private List<PropertyCharacter> mechImplants = new List<PropertyCharacter>();
-    private List<Armor> armors = new List<Armor>();
-    private List<Weapon> weapons = new List<Weapon>();
-    private List<Equipment> equipments = new List<Equipment>();
-    private int wounds, treate;
+    private List<MechImplant> _implants = new List<MechImplant>();
+    private List<Equipment> _equipments = new List<Equipment>();
+    private List<Feature> _features = new List<Feature>();
+    private List<Feature> _skills = new List<Feature>();
+    private List<Feature> _talents = new List<Feature>();
+    private List<Feature> _psyPowers = new List<Feature>();
 
-    public string Name { get => name; set => name = value; }
-    public string InternalName { get => internalName; set => internalName = value; }
-    public int[] ArmorPoints { get => armorPoints; set => armorPoints = value; }
-    public int[] ArmorPointsAbl { get => armorPointsAbl; set => armorPointsAbl = value; }
-    public int[] Characteristics { get => characteristics; set => characteristics = value; }
-    public int[] UnnaturualChar { get => unnaturualChar; set => unnaturualChar = value; }
-    public List<PropertyCharacter> Skills { get => skills; set => skills = value; }
-    public List<PropertyCharacter> Talents { get => talents; set => talents = value; }
-    public List<PropertyCharacter> Features { get => features; set => features = value; }
-    public List<PropertyCharacter> PsyPowers { get => psyPowers; set => psyPowers = value; }
-    public List<PropertyCharacter> MechImplants { get => mechImplants; }
-    public List<Armor> Armors { get => armors; set => armors = value; }
-    public List<Weapon> Weapons { get => weapons; set => weapons = value; }
-    public List<Equipment> Equipments { get => equipments; set => equipments = value; }
-    public int Wounds { get => wounds; set => wounds = value; }
-    public int Treate { get => treate; set => treate = value; }    
-
-    public Character()
+    public Character(SaveLoadCharacter saveLoad, List<MechImplant> implants, List<Equipment> equipments, List<Feature> features, List<Feature> skills, List<Feature> talents, List<Feature> psyPowers)
     {
+        _implants.AddRange(implants);
+        _equipments.AddRange(equipments);
+        _features.AddRange(features);
+        _skills.AddRange(skills);
+        _talents.AddRange(talents);
+        _psyPowers.AddRange(psyPowers);
 
-    }
-    public Character(SaveLoadCharacter loadCharacter, Creators creators)
-    {
-        name = loadCharacter.name;
-        internalName = loadCharacter.internalName;
-        wounds = loadCharacter.wounds;
-        treate = loadCharacter.treate;
+        Name = saveLoad.name;
+        ShowingName = saveLoad.showingName;
+        Wounds = saveLoad.wounds;
+        WeaponSkill = saveLoad.weaponSkill;
+        BallisticSkill = saveLoad.ballisticSkill;
+        Strength = saveLoad.strength;
+        Toughness = saveLoad.toughness;
+        Agility = saveLoad.agility;
+        Intelligence = saveLoad.intelligence;
+        Perception = saveLoad.perception;
+        Willpower = saveLoad.willpower;
+        Fellowship = saveLoad.fellowship;
+        Influence = saveLoad.influence;
 
-        LoadFromString(loadCharacter.armorPoints, armorPoints);
-        LoadFromString(loadCharacter.armorPointsAbl, armorPointsAbl);
-        LoadFromString(loadCharacter.characteristics, characteristics);
-        LoadFromString(loadCharacter.unnaturualChar, unnaturualChar);
+        WeaponSkillSuper = saveLoad.weaponSkillSuper;
+        BallisticSkillSuper = saveLoad.ballisticSkillSuper;
+        StrengthSuper = saveLoad.strengthSuper;
+        ToughnessSuper = saveLoad.toughnessSuper;
+        AgilitySuper = saveLoad.agilitySuper;
+        IntelligenceSuper = saveLoad.intelligenceSuper;
+        PerceptionSuper = saveLoad.perceptionSuper;
+        WillpowerSuper = saveLoad.willpowerSuper;
+        FellowshipSuper = saveLoad.fellowshipSuper;
+        InfluenceSuper = saveLoad.influenceSuper;
 
-        skills.AddRange(LoadPropertyFromString(loadCharacter.skills, creators.Skills));
-        talents.AddRange(LoadPropertyFromString(loadCharacter.talents, creators.Talents));
-        features.AddRange(LoadPropertyFromString(loadCharacter.features, creators.Features));
-        psyPowers.AddRange(LoadPropertyFromString(loadCharacter.psyPowers, creators.PsyPowers));
-        mechImplants.AddRange(LoadPropertyFromString(loadCharacter.implants, creators.MechImplants));
+        Half = saveLoad.half;
+        Full = saveLoad.full;
+        Natisk = saveLoad.natisk;
+        Run = saveLoad.run;
 
-        List<Equipment> futureArmors = new List<Equipment>();
-        futureArmors.AddRange(LoadEquipmentFromString(loadCharacter.armors, creators.Equipments));
-        foreach(Equipment equipment in futureArmors)
-        {
-            armors.Add((Armor)equipment);
-        }
+        ArmorHead = saveLoad.armorHead;
+        ArmorAblHead = saveLoad.armorAblHead;
+        ArmorTotalHead = saveLoad.armorTotalHead;
 
-        List<Equipment> futureWeapons = new List<Equipment>();
-        futureWeapons.AddRange(LoadEquipmentFromString(loadCharacter.weapons, creators.Equipments));
-        foreach (Equipment equipment in futureWeapons)
-        {
-            weapons.Add((Weapon)equipment);
-        }
+        ArmorRightHand = saveLoad.armorRightHand;
+        ArmorAblRightHand = saveLoad.armorAblRightHand;
+        ArmorTotalRightHand = saveLoad.armorTotalRightHand;
 
-        equipments.AddRange(LoadEquipmentFromString(loadCharacter.equipments, creators.Equipments));
+        ArmorLeftHand = saveLoad.armorLeftHand;
+        ArmorAblLeftHand = saveLoad.armorAblLeftHand;
+        ArmorTotalLeftHand = saveLoad.armorTotalLeftHand;
 
-        List<string> list = new List<string>();
-        list = loadCharacter.skillsLvl.Split(new char[] { '/' }).ToList();
+        ArmorBody = saveLoad.armorBody;
+        ArmorAblBody = saveLoad.armorAblBody;
+        ArmorTotalBody = saveLoad.armorTotalBody;
 
-        if(CheckString(list))
-        {
-            for(int i = 0; i < skills.Count; i++)
-            {
-                skills[i].Lvl = int.Parse(list[i]);
-            }
-        }
+        ArmorRightLeg = saveLoad.armorRightLeg;
+        ArmorAblRightLeg = saveLoad.armorAblRightLeg;
+        ArmorTotalRightLeg = saveLoad.armorTotalRightLeg;
 
-        list.Clear();
-        list = loadCharacter.featuresLvl.Split(new char[] { '/' }).ToList();
-        if (CheckString(list))
-        {
-            for (int i = 0; i < features.Count; i++)
-            {
-                features[i].Lvl = int.Parse(list[i]);
-            }
-        }
-    }
-    private void LoadFromString(string text, int[] mas)
-    {
-        List<string> list = new List<string>();
-        list = text.Split(new char[] { '/' }).ToList();
-        for (int i = 0; i < mas.Length; i++)
-        {
-            mas[i] = int.Parse(list[i]);
-        }
+        ArmorLeftLeg = saveLoad.armorLeftLeg;
+        ArmorAblLeftLeg = saveLoad.armorAblLeftLeg;
+        ArmorTotalLeftLeg = saveLoad.armorTotalLeftLeg;
+
+        IsTurned = saveLoad.isTurned;
+
+        ShelterHead = saveLoad.shelterHead;
+        ShelterBody = saveLoad.shelterBody;
+        ShelterLeftHand = saveLoad.shelterLeftHand;
+        ShelterLeftLeg = saveLoad.shelterLeftHand;
+        ShelterRightHand = saveLoad.shelterRightHand;
+        ShelterRightLeg = saveLoad.shelterRightLeg;
+        ShelterPoint = saveLoad.shelterPoint;
     }
 
-    private List<PropertyCharacter> LoadPropertyFromString(string text, List<PropertyCharacter> encyclop)
+    public Character(Character character)
     {
-        List<string> list = new List<string>();
-        list = text.Split(new char[] { '/' }).ToList();
+        Name = character.Name;
+        ShowingName = character.ShowingName;
+        Wounds = character.Wounds;
+        WeaponSkill = character.WeaponSkill;
+        BallisticSkill = character.BallisticSkill;
+        Strength = character.Strength;
+        Toughness = character.Toughness;
+        Agility = character.Agility;
+        Intelligence = character.Intelligence;
+        Perception = character.Perception;
+        Willpower = character.Willpower;
+        Fellowship = character.Fellowship;
+        Influence = character.Influence;
 
-        List<PropertyCharacter> properties = new List<PropertyCharacter>();
-        if(CheckString(list))
-        foreach (string str in list)
-        {
-            foreach(PropertyCharacter property in encyclop)
-            {
-                if(string.Compare(str, property.Name, true) == 0)
-                {
-                    properties.Add(property);
-                    break;
-                }
-            }
-        }
+        WeaponSkillSuper = character.WeaponSkillSuper;
+        BallisticSkillSuper = character.BallisticSkillSuper;
+        StrengthSuper = character.StrengthSuper;
+        ToughnessSuper = character.ToughnessSuper;
+        AgilitySuper = character.AgilitySuper;
+        IntelligenceSuper = character.IntelligenceSuper;
+        PerceptionSuper = character.PerceptionSuper;
+        WillpowerSuper = character.WillpowerSuper;
+        FellowshipSuper = character.FellowshipSuper;
+        InfluenceSuper = character.InfluenceSuper;
 
-        return properties;
-    }
+        Half = character.Half;
+        Full = character.Full;
+        Natisk = character.Natisk;
+        Run = character.Run;
 
-    private List<Equipment> LoadEquipmentFromString(string text, List<Equipment> encyclop)
-    {
-        List<string> list = new List<string>();
-        list = text.Split(new char[] { '/' }).ToList();
+        ArmorHead = character.ArmorHead;
+        ArmorAblHead = character.ArmorAblHead;
+        ArmorTotalHead = character.ArmorTotalHead;
 
-        List<Equipment> equips = new List<Equipment>();
-        if (CheckString(list))
-            foreach (string str in list)
-            {
-                foreach (Equipment equip in encyclop)
-                {
-                    if (string.Compare(str, equip.Name, true) == 0)
-                    {
-                        equips.Add(equip);
-                        break;
-                    }
-                }
-            }
+        ArmorRightHand = character.ArmorRightHand;
+        ArmorAblRightHand = character.ArmorAblRightHand;
+        ArmorTotalRightHand = character.ArmorTotalRightHand;
 
-        return equips;
-    }
+        ArmorLeftHand = character.ArmorLeftHand;
+        ArmorAblLeftHand = character.ArmorAblLeftHand;
+        ArmorTotalLeftHand = character.ArmorTotalLeftHand;
 
-    private bool CheckString(List<string> list)
-    {
-        if (list.Count > 0)
-        {
-            if (list[0].Length > 0)
-            {
-                return true;
-            }
-        }
+        ArmorBody = character.ArmorBody;
+        ArmorAblBody = character.ArmorAblBody;
+        ArmorTotalBody = character.ArmorTotalBody;
 
-        return false;
-    }
-    public void SaveCharacter()
-    {
-        var path = Path.Combine($"{Application.dataPath}/StreamingAssets/Characters/", internalName + ".JSON");
-        List<string> data = new List<string>();
+        ArmorRightLeg = character.ArmorRightLeg;
+        ArmorAblRightLeg = character.ArmorAblRightLeg;
+        ArmorTotalRightLeg = character.ArmorTotalRightLeg;
 
-        SaveLoadCharacter saveLoad = new SaveLoadCharacter();
+        ArmorLeftLeg = character.ArmorLeftLeg;
+        ArmorAblLeftLeg = character.ArmorAblLeftLeg;
+        ArmorTotalLeftLeg = character.ArmorTotalLeftLeg;
 
-        saveLoad.internalName = internalName;
-        saveLoad.wounds = wounds;
-        saveLoad.treate = treate;
+        IsTurned = character.IsTurned;
 
-        saveLoad.armorPoints = "";
-        saveLoad.armorPoints = PackingIntInText(armorPoints);
+        ShelterHead = character.ShelterHead;
+        ShelterBody = character.ShelterBody;
+        ShelterLeftHand = character.ShelterLeftHand;
+        ShelterLeftLeg = character.ShelterLeftHand;
+        ShelterRightHand = character.ShelterRightHand;
+        ShelterRightLeg = character.ShelterRightLeg;
 
-        saveLoad.armorPointsAbl = "";
-        saveLoad.armorPointsAbl = PackingIntInText(armorPointsAbl);
+        _implants.AddRange(character.Implants);
+        _equipments.AddRange(character.Equipments);
+        _features.AddRange(character.Features);
+        _skills.AddRange(character.Skills);
+        _talents.AddRange(character.Talents);
+        _psyPowers.AddRange(character.PsyPowers);
+}
 
-        saveLoad.characteristics = "";
-        saveLoad.characteristics = PackingIntInText(characteristics);
+    public string Name { get; set; }
+    public string ShowingName { get; set; }
+    public int Wounds { get; set; }
+    public int WeaponSkill { get; set; }
+    public int BallisticSkill { get; set; }
+    public int Strength { get; set; }
+    public int Toughness { get; set; }
+    public int Agility { get; set; }
+    public int Intelligence { get; set; }
+    public int Perception { get; set; }
+    public int Willpower { get; set; }
+    public int Fellowship { get; set; }
+    public int Influence { get; set; }
 
-        saveLoad.unnaturualChar = "";
-        saveLoad.unnaturualChar = PackingIntInText(unnaturualChar);
+    public int WeaponSkillSuper { get; set; }
+    public int BallisticSkillSuper { get; set; }
+    public int StrengthSuper { get; set; }
+    public int ToughnessSuper { get; set; }
+    public int AgilitySuper { get; set; }
+    public int IntelligenceSuper { get; set; }
+    public int PerceptionSuper { get; set; }
+    public int WillpowerSuper { get; set; }
+    public int FellowshipSuper { get; set; }
+    public int InfluenceSuper { get; set; }
 
-        saveLoad.equipments = "";
-        saveLoad.equipments = PackEquipmentInText(equipments);
+    public int Half { get; set; }
+    public int Full { get; set; }
+    public int Natisk { get; set; }
+    public int Run { get; set; }
 
-        saveLoad.armors = "";
-        List<Equipment> tempArmor = new List<Equipment>();
-        tempArmor.AddRange(armors);
-        saveLoad.armors = PackEquipmentInText(tempArmor);
+    public int ArmorHead { get; set; }
+    public int ArmorAblHead { get; set; }
+    public int ArmorTotalHead { get; set; }
 
-        saveLoad.weapons = "";
-        List<Equipment> tempWeapons = new List<Equipment>();
-        tempWeapons.AddRange(weapons);
-        saveLoad.weapons = PackEquipmentInText(tempWeapons);
+    public int ArmorRightHand { get; set; }
+    public int ArmorAblRightHand { get; set; }
+    public int ArmorTotalRightHand { get; set; }
 
-        saveLoad.features = "";
-        saveLoad.features = PackingPropInText(features);
+    public int ArmorLeftHand { get; set; }
+    public int ArmorAblLeftHand { get; set; }
+    public int ArmorTotalLeftHand { get; set; }
 
-        saveLoad.skills = "";
-        saveLoad.skills = PackingPropInText(skills);
+    public int ArmorBody { get; set; }
+    public int ArmorAblBody { get; set; }
+    public int ArmorTotalBody { get; set; }
 
-        saveLoad.talents = "";
-        saveLoad.talents = PackingPropInText(talents);
+    public int ArmorRightLeg { get; set; }
+    public int ArmorAblRightLeg { get; set; }
+    public int ArmorTotalRightLeg { get; set; }
 
-        saveLoad.psyPowers = "";
-        saveLoad.psyPowers = PackingPropInText(psyPowers);
+    public int ArmorLeftLeg { get; set; }
+    public int ArmorAblLeftLeg { get; set; }
+    public int ArmorTotalLeftLeg { get; set; }
 
-        saveLoad.implants = "";
-        saveLoad.implants = PackingPropInText(mechImplants);
+    public bool IsTurned { get; set; }
+    public bool IsHorde { get; set; }
 
-        int[] tempSkills = new int[skills.Count];
-        for(int i = 0; i < skills.Count; i++)
-        {
-            tempSkills[i] = skills[i].Lvl;
-        }
-        saveLoad.skillsLvl = "";
-        saveLoad.skillsLvl = PackingIntInText(tempSkills);
+    public int ShelterHead { get; set; }
+    public int ShelterRightHand { get; set; }
+    public int ShelterLeftHand { get; set; }
+    public int ShelterBody { get; set; }
+    public int ShelterRightLeg { get; set; }
+    public int ShelterLeftLeg { get; set; }
 
-        int[] tempFeatures = new int[features.Count];
-        for(int i = 0; i < features.Count; i++)
-        {
-            tempFeatures[i] = features[i].Lvl;
-        }
-        saveLoad.featuresLvl = "";
-        saveLoad.featuresLvl = PackingIntInText(tempFeatures);
-        data.Add(JsonUtility.ToJson(saveLoad));
+    public int ShelterPoint { get; set; }
 
-        File.WriteAllLines(path, data);
-    }
-
-    private string PackingIntInText(int[] mas)
-    {
-        string text = "";
-        foreach(int i in mas)
-        {
-            text += $"{i}/";
-        }
-        text = DeleteLastChar(text);
-
-        return text;
-    }
-
-    private string PackEquipmentInText(List<Equipment> equipment)
-    {
-        string text = "";
-        foreach (Equipment eq in equipment)
-        {
-            text += $"{eq.Name}/";
-        }
-        text = DeleteLastChar(text);
-
-        return text;
-    }
-
-    private string PackingPropInText(List<PropertyCharacter> property)
-    {
-        string text = "";
-        foreach (PropertyCharacter prop in property)
-        {
-            text += $"{prop.Name}/";
-        }
-        text = DeleteLastChar(text);
-
-        return text;
-    }
-
-    private string DeleteLastChar(string text)
-    {
-        if (text.Length > 0)
-        {
-            string tex = text.TrimEnd('/');
-            return tex;
-        }
-        else
-        {
-            return text;
-        }
-
-    }
-    /*
-    public int Init { get => iniciative; }
-    public void SetParams(int head, int leftHand, int rightHand, int body, int leftLeg, int rightLeg, int health, int bonusAgility, int bonusFatigue, string name, int clip, DeleteThis deleteThis)
-    {
-        this.head = head;
-        this.leftHand = leftHand;
-        this.rightHand = rightHand;
-        this.body = body;
-        this.leftLeg = leftLeg;
-        this.rightLeg = rightLeg;
-        this.health = health;
-        this.bonusAgility = bonusAgility;
-        this.bonusFatigue = bonusFatigue;
-        nameCharacter = name;
-        textName.text = name;
-        this.clip = clip;
-        maxClip = clip;
-        ammo = clip * 2;
-        UpdateText();
-        this.deleteThis = deleteThis;
-
-    }
-
-    private void Start()
-    {
-        Game.BattleStarted += StartBattle;
-        Game.BattleFinished += FinishBattle;
-
-    }
-
-    private void GenerateIniciative()
-    {
-        if(iniciativeInput.text == "")
-        {
-            var rand = new System.Random();
-            iniciative = rand.Next(1, 10) + bonusAgility;
-        }
-        else
-        {
-            iniciative = int.Parse(iniciativeInput.text);
-        }
-        
-    }
-
-    private void UpdateText()
-    {
-        textHealth.text = health.ToString();
-        textClip.text = clip.ToString();
-    }
-
-    public void GetDamage()
-    {
-        panelDamage.RegDelegateFromNPC(GetDamageWithParams);
-    }
-
-    private void GetDamageWithParams(int place, int damage, int prob)
-    {
-        if(place < 10)
-        {
-            Damage(head - prob, damage);
-        }
-        else if(place > 10 && place < 21)
-        {
-            Damage(rightHand - prob, damage);
-        }
-        else if (place > 20 && place < 31)
-        {
-            Damage(leftHand - prob, damage);
-        }
-        else if (place > 30 && place < 71)
-        {
-            Damage(body - prob, damage);
-        }
-        else if (place > 70 && place < 86)
-        {
-            Damage(rightLeg - prob, damage);
-        }
-        else if (place > 85 && place < 101)
-        {
-            Damage(leftLeg - prob, damage);
-        }
-    }
-
-    private void Damage(int armor, int damage)
-    {
-        if (armor < 0)
-            armor = 0;
-        damage -= (armor + bonusFatigue);
-        if (damage < 0)
-        {
-            damage = 0;
-        }
-        health -= damage;
-        UpdateText(); 
-    }
-
-    public void Shoot()
-    {
-        if(clip > 0)
-            clip--;
-        UpdateText();
-    }
-
-    public void Reload()
-    {
-        if(ammo >= maxClip)
-        {
-            clip = maxClip;
-            ammo -= maxClip;
-        }
-        else if(ammo > 0)
-        {
-            clip = ammo;
-            ammo = 0;
-        }
-        UpdateText();
-    }
-
-    private void StartBattle()
-    {
-        GenerateIniciative();
-    }
-
-    private void FinishBattle()
-    {
-        image.color = Color.white;
-    }
-
-    public void DeleteThisCharacter()
-    {
-        deleteThis?.Invoke(this);
-        Game.BattleStarted -= StartBattle;
-        Game.BattleFinished -= FinishBattle;
-        Destroy(gameObject);
-    }
-
-    public void CharacterTurn()
-    {
-        image.color = Color.green;
-    }
-
-    public void CharacterEndTurn()
-    {
-        image.color = Color.white;
-    }*/
+    public List<MechImplant> Implants => _implants;
+    public List<Equipment> Equipments => _equipments;
+    public List<Feature> Features => _features;
+    public List<Feature> Skills => _skills;
+    public List<Feature> Talents => _talents;
+    public List<Feature> PsyPowers => _psyPowers;
 }

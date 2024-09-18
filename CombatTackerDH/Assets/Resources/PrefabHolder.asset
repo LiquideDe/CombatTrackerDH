@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 599f26be091665d449bc6d9b2c359b81, type: 3}
+  m_Name: PrefabHolder
+  m_EditorClassIdentifier: 
+  _mainScene: {fileID: 7909665356424853047, guid: 2f09540e2f444b64c8aebea62b7690f1, type: 3}
+  _listUniversal: {fileID: 8756377037503274003, guid: 6fa5b65c22af2d14aa3f9cfc1f3e1b7d, type: 3}
+  _listWithNewButton: {fileID: 3277306362855570178, guid: e9ee30b5d5698fd478382c48bd943bd4, type: 3}
+  _creationThing: {fileID: 281938209668581872, guid: 7ed608d2fca06ce48a95057cba806436, type: 3}
+  _creationMelee: {fileID: 7591179093194819001, guid: cb83e84a3ab10fa42a0e5ac325ed7fda, type: 3}
+  _creationGrenade: {fileID: 1192952668458524443, guid: f7e1438e3ad11544fbd1243f4e90e3e1, type: 3}
+  _creationRange: {fileID: 7713028099766641719, guid: dacca3c9392eeb74686c12b6a5995e9d, type: 3}
+  _creationArmor: {fileID: 5690438718450768991, guid: 06757261c7d080c43972b54a958474e9, type: 3}
+  _creationImplant: {fileID: 237101585844127933, guid: bcdbf21e4d8b95f4d982bcce9d1cf503, type: 3}
+  _creationCharacter: {fileID: 3880100874864026277, guid: b9a6aae4ce5d60f4a8c86d8cfa1adaa4, type: 3}
+  _textInfo: {fileID: 3764388071755262497, guid: 94e0f5f1c2fd29843891858ed4e130d3, type: 3}
+  _damagePanel: {fileID: 715832743953025158, guid: 324812b52b96db247a24b1d261ec533a, type: 3}
+  _creationTalent: {fileID: 8722841523181783873, guid: 634e5a508e1f1f740b764c6c878b9241, type: 3}
