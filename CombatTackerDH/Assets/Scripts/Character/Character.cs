@@ -156,7 +156,16 @@ public class Character : IName
         _skills.AddRange(character.Skills);
         _talents.AddRange(character.Talents);
         _psyPowers.AddRange(character.PsyPowers);
-}
+
+        System.Random rnd = new System.Random();
+        
+        if(AgilitySuper > Agility/10)
+            Initiative = rnd.Next(1, 10) + AgilitySuper;
+        else
+            Initiative = rnd.Next(1,10) + Agility/10;
+
+        Debug.Log($"Agility = {Agility}, AgilistySUper = {AgilitySuper}, Initiative = {Initiative}");
+    }
 
     public string Name { get; set; }
     public string ShowingName { get; set; }
@@ -223,6 +232,8 @@ public class Character : IName
     public int ShelterLeftLeg { get; set; }
 
     public int ShelterPoint { get; set; }
+
+    public int Initiative { get; set; }
 
     public List<MechImplant> Implants => _implants;
     public List<Equipment> Equipments => _equipments;

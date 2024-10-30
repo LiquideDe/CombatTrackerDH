@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Zenject;
 using System.IO;
+using System.Linq;
 
 public class MainScenePresenter : IPresenter
 {
@@ -48,8 +49,8 @@ public class MainScenePresenter : IPresenter
         _view.CoverLeftLeg += CoverLeftLeg;
         _view.CoverRightHand += CoverRightHand;
         _view.CoverRightLeg += CoverRightLeg;
-        _view.EditScene += EditScene;
         _view.EndTurn += EndTurn;
+        _view.EndBattle += EndBattle;
         _view.LoadScene += ShowScenes;
         _view.NextTurn += NextTurn;
         _view.SaveScene += SaveScene;
@@ -201,7 +202,16 @@ public class MainScenePresenter : IPresenter
 
     private void StartBattle()
     {
-        throw new NotImplementedException();
+        _audioManager.PlayClick();
+        _view.ShowEndBattleButton();
+        _characters = _characters.OrderByDescending(o => o.Initiative).ToList();
+        _view.UpdateCharactersList(_characters);
+    }
+
+    private void EndBattle()
+    {
+        _audioManager.PlayClick();
+        _view.ShowStartBattleButton();
     }
 
     private void ShowThisFeature(string name)
@@ -322,11 +332,6 @@ public class MainScenePresenter : IPresenter
 
         _view.UpdateCharactersList(_characters);
 
-    }
-
-    private void EditScene()
-    {
-        throw new NotImplementedException();
     }
 
     private void CoverRightLeg(string points)
@@ -541,6 +546,9 @@ public class MainScenePresenter : IPresenter
         int.TryParse(_view.InfluenceSuper, out int influenceSuper);
         _character.Influence = influence;
         _character.InfluenceSuper = influenceSuper;
+
+        int.TryParse(_view.Initiative, out int initiative);
+        _character.Initiative = initiative;
 
         int.TryParse(_view.Shelter, out int shelter);
         _character.ShelterPoint = shelter;

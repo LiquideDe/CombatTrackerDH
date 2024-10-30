@@ -32,11 +32,13 @@ public class MainSceneView : MonoBehaviour
     [SerializeField] private TMP_InputField _willpower, _willpowerSuper;
     [SerializeField] private TMP_InputField _fellowship, _fellowshipSuper;
     [SerializeField] private TMP_InputField _influence, _influenceSuper;
+    [SerializeField] private TMP_InputField _initiative;
 
     [SerializeField] private TMP_InputField _half, _full, _natisk, _run;
     [SerializeField] private TMP_InputField _inputShelter, _inputNameScene;
 
-    [SerializeField] private Button _buttonAddCharacter, _buttonStartBattle, _buttonNextTurn, _buttonHandbook, _buttonEditScene, _buttonTakeDamage, _buttonEndTurn;
+    [SerializeField] private Button _buttonAddCharacter, _buttonStartBattle, _buttonEndBattle, _buttonNextTurn, 
+        _buttonHandbook, _buttonTakeDamage, _buttonEndTurn;
     [SerializeField] private Button _buttonSaveScene, _buttonLoadScene, _buttonClearScene;
 
     [SerializeField] private Button _buttonShelterHead, _buttonShelterRightHand, _buttonShelterLeftHand, _buttonShelterBody, _buttonShelterRightLeg, _buttonShelterLeftLeg;
@@ -46,7 +48,8 @@ public class MainSceneView : MonoBehaviour
 
     [SerializeField] private Toggle _toggleHorde;
 
-    public event Action AddCharacter, StartBattle, NextTurn, ShowHandbook, EditScene, EndTurn, TakeDamage, SaveScene, LoadScene, ClearScene, ChangeCharacterParameters, ToggleHorde;
+    public event Action AddCharacter, StartBattle, NextTurn, ShowHandbook, EndTurn, TakeDamage, SaveScene, LoadScene, ClearScene, 
+        ChangeCharacterParameters, ToggleHorde, EndBattle;
     public event Action<string> ShowThisCharacter, ShowThisFeature, RemoveThisCharacter;
     public event Action<string> CoverHead, CoverRightHand, CoverLeftHand, CoverBody, CoverRightLeg, CoverLeftLeg, ChangeShelter;
     private List<ItemInList> _features = new List<ItemInList>();
@@ -98,14 +101,15 @@ public class MainSceneView : MonoBehaviour
     public string Run => _run.text;
     public string Shelter => _inputShelter.text;
     public string InputNameScene { get => _inputNameScene.text; set => _inputNameScene.text = value; } 
+    public string Initiative => _initiative.text;
 
     private void OnEnable()
     {
         _buttonAddCharacter.onClick.AddListener(AddCharacterPressed);
         _buttonStartBattle.onClick.AddListener(StartBattlePressed);
+        _buttonEndBattle.onClick.AddListener(EndBattlePressed);
         _buttonNextTurn.onClick.AddListener(NextTurnPressed);
         _buttonHandbook.onClick.AddListener(ShowHandbookPressed);
-        _buttonEditScene.onClick.AddListener(EditScenePressed);
         _buttonEndTurn.onClick.AddListener(EndTurnPressed);
         _buttonTakeDamage.onClick.AddListener(TakeDamagePressed);
 
@@ -150,6 +154,7 @@ public class MainSceneView : MonoBehaviour
         _influence.onDeselect.AddListener(ChangeInInput);
         _influenceSuper.onDeselect.AddListener(ChangeInInput);
         _inputShelter.onDeselect.AddListener(ChangeInInput);
+        _initiative.onDeselect.AddListener(ChangeInInput);
 
         _half.onDeselect.AddListener(ChangeInInput);
         _full.onDeselect.AddListener(ChangeInInput);
@@ -175,9 +180,9 @@ public class MainSceneView : MonoBehaviour
     {
         _buttonAddCharacter.onClick.RemoveAllListeners();
         _buttonStartBattle.onClick.RemoveAllListeners();
+        _buttonEndBattle.onClick.RemoveAllListeners();
         _buttonNextTurn.onClick.RemoveAllListeners();
         _buttonHandbook.onClick.RemoveAllListeners();
-        _buttonEditScene.onClick.RemoveAllListeners();
         _buttonEndTurn.onClick.RemoveAllListeners();
         _buttonTakeDamage.onClick.RemoveAllListeners();
 
@@ -222,6 +227,7 @@ public class MainSceneView : MonoBehaviour
         _influence.onDeselect.RemoveAllListeners();
         _influenceSuper.onDeselect.RemoveAllListeners();
         _inputShelter.onDeselect.RemoveAllListeners();
+        _initiative.onDeselect.RemoveAllListeners();
 
         _half.onDeselect.RemoveAllListeners();
         _full.onDeselect.RemoveAllListeners();
@@ -279,6 +285,7 @@ public class MainSceneView : MonoBehaviour
 
         _influence.text = character.Influence.ToString();
         _influenceSuper.text = character.InfluenceSuper.ToString();
+        _initiative.text = character.Initiative.ToString();
 
         _toggleHorde.SetIsOnWithoutNotify(character.IsHorde);
 
@@ -387,6 +394,18 @@ public class MainSceneView : MonoBehaviour
         ClearListWithItems(_features);
     }
 
+    public void ShowStartBattleButton()
+    {
+        _buttonStartBattle.gameObject.SetActive(true);
+        _buttonEndBattle.gameObject.SetActive(false);
+    }
+
+    public void ShowEndBattleButton() 
+    {
+        _buttonStartBattle.gameObject.SetActive(false);
+        _buttonEndBattle.gameObject.SetActive(true);
+    }
+
     private void SetActiveORDeactiveSpriteForButtonShelter(Image image, int amount)
     {
         if (amount > 0)
@@ -441,8 +460,6 @@ public class MainSceneView : MonoBehaviour
 
     private void NextTurnPressed() => NextTurn?.Invoke();
 
-    private void EditScenePressed() => EditScene?.Invoke();
-
     private void ShowHandbookPressed() => ShowHandbook?.Invoke();
 
     private void StartBattlePressed() => StartBattle?.Invoke();
@@ -470,4 +487,6 @@ public class MainSceneView : MonoBehaviour
     private void RemoveThisCharacterPressed(string name) => RemoveThisCharacter?.Invoke(name);
 
     private void ToggleHordePressed(bool arg0) => ToggleHorde?.Invoke();
+
+    private void EndBattlePressed() => EndBattle?.Invoke();
 }
