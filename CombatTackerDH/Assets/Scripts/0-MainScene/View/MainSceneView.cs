@@ -47,11 +47,12 @@ public class MainSceneView : MonoBehaviour
         _imageButtonShelterRightLeg, _imageButtonShelterLeftLeg;
 
     [SerializeField] private Toggle _toggleHorde;
+    [SerializeField] private Button _buttonShowNPCNature;
 
     public event Action AddCharacter, StartBattle, NextTurn, ShowHandbook, EndTurn, TakeDamage, SaveScene, LoadScene, ClearScene, 
-        ChangeCharacterParameters, ToggleHorde, EndBattle;
+        ChangeCharacterParameters, ToggleHorde, EndBattle, ShowNPC;
     public event Action<string> ShowThisCharacter, ShowThisFeature, RemoveThisCharacter;
-    public event Action<string> CoverHead, CoverRightHand, CoverLeftHand, CoverBody, CoverRightLeg, CoverLeftLeg, ChangeShelter;
+    public event Action<string> CoverHead, CoverRightHand, CoverLeftHand, CoverBody, CoverRightLeg, CoverLeftLeg;
     private List<ItemInList> _features = new List<ItemInList>();
     private List<ItemWithSignals> _characters = new List<ItemWithSignals>();
 
@@ -174,7 +175,9 @@ public class MainSceneView : MonoBehaviour
 
         _toggleHorde.onValueChanged.AddListener(ToggleHordePressed);
 
+        _buttonShowNPCNature.onClick.AddListener(ShowNPCPressed);
     }
+
 
     private void OnDisable()
     {
@@ -489,4 +492,6 @@ public class MainSceneView : MonoBehaviour
     private void ToggleHordePressed(bool arg0) => ToggleHorde?.Invoke();
 
     private void EndBattlePressed() => EndBattle?.Invoke();
+
+    private void ShowNPCPressed() => ShowNPC?.Invoke();
 }

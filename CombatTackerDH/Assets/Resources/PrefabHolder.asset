@@ -25,3 +25,4 @@ MonoBehaviour:
   _textInfo: {fileID: 3764388071755262497, guid: 94e0f5f1c2fd29843891858ed4e130d3, type: 3}
   _damagePanel: {fileID: 715832743953025158, guid: 324812b52b96db247a24b1d261ec533a, type: 3}
   _creationTalent: {fileID: 8722841523181783873, guid: 634e5a508e1f1f740b764c6c878b9241, type: 3}
+  _npcNature: {fileID: 3351425580951629495, guid: 3165854517cc40c4fabd964de99291a3, type: 3}

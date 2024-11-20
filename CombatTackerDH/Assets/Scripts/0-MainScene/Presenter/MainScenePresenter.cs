@@ -62,6 +62,7 @@ public class MainScenePresenter : IPresenter
         _view.ChangeCharacterParameters += ParseInputs;
         _view.RemoveThisCharacter += RemoveThisCharacter;
         _view.ToggleHorde += ToggleHorde;
+        _view.ShowNPC += ShowNPCNature;
 
         _weaponView.ShowThisProperty += ShowThisFeature;
         _weaponView.AutoFire += GunIsFiredAuto;
@@ -300,9 +301,9 @@ public class MainScenePresenter : IPresenter
             saveScene.nameScene = _view.InputNameScene;
 
             var path = Path.Combine($"{Application.dataPath}/StreamingAssets/BattleScenes/", saveScene.nameScene + ".JSON");
-            List<string> data = new List<string>();
-            data.Add(JsonUtility.ToJson(saveScene));
+            List<string> data = new List<string>{JsonUtility.ToJson(saveScene)};
             File.WriteAllLines(path, data);
+            _creators.AddBattleScene(saveScene);
         }
     }
 
@@ -560,5 +561,11 @@ public class MainScenePresenter : IPresenter
     {
         _audioManager.PlayClick();
         _character.IsHorde = !_character.IsHorde;
+    }
+
+    private void ShowNPCNature()
+    {
+        _audioManager.PlayClick();
+        _lvlFactory.Get( TypeScene.NPCNature);
     }
 }

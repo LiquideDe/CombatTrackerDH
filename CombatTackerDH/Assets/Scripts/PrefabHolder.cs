@@ -8,6 +8,7 @@ public class PrefabHolder : ScriptableObject
     [SerializeField] private GameObject _listUniversal, _listWithNewButton;
     [SerializeField] private GameObject _creationThing, _creationMelee, _creationGrenade, _creationRange, _creationArmor, _creationImplant;
     [SerializeField] private GameObject _creationCharacter, _textInfo, _damagePanel, _creationTalent;
+    [SerializeField] private GameObject _npcNature;
 
     public GameObject Get(TypeScene typeScene)
     {
@@ -51,6 +52,9 @@ public class PrefabHolder : ScriptableObject
 
             case TypeScene.CreationTalent:
                 return _creationTalent;
+
+            case TypeScene.NPCNature:
+                return _npcNature;
 
             default:
                 throw new ArgumentException(nameof(TypeScene));

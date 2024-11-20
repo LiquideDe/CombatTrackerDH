@@ -7,7 +7,7 @@ using Zenject;
 public class DamagePanelPresenter : IPresenter
 {
     public event Action<string> ReturnTextToArmor;
-    public event Action DamageToShelter, Close;
+    public event Action DamageToShelter;
 
     private AudioManager _audioManager;
     private DamagePanelView _view;

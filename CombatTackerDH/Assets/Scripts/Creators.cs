@@ -115,6 +115,23 @@ public class Creators
         return text;
     }
 
+    public void AddBattleScene(SaveLoadScene loadScene)
+    {
+        List<string> charactersNames = new List<string>();
+        charactersNames = loadScene.charactersNames.Split(new char[] { '/' }).ToList();
+
+        List<string> showingNames = new List<string>();
+        showingNames = loadScene.showingCharactersNames.Split(new char[] { '/' }).ToList();
+
+        List<Character> characters = new List<Character>();
+        for (int i = 0; i < charactersNames.Count; i++)
+        {
+            characters.Add(new Character(GetCharacterByName(charactersNames[i])));
+            characters[^1].ShowingName = showingNames[i];
+        }
+        _scenes.Add(new BattleScene(loadScene, characters));
+    }
+
     private Feature GetFeatureFromListByName(string name, List<Feature> features)
     {
         foreach (Feature feature in features)
@@ -250,19 +267,7 @@ public class Creators
         {
             string[] data = File.ReadAllLines(sceneJson);
             SaveLoadScene loadScene = JsonUtility.FromJson<SaveLoadScene>(data[0]);
-            List<string> charactersNames = new List<string>();
-            charactersNames = loadScene.charactersNames.Split(new char[] { '/' }).ToList();
-
-            List<string> showingNames = new List<string>();
-            showingNames = loadScene.showingCharactersNames.Split(new char[] { '/' }).ToList();
-
-            List<Character> characters = new List<Character>();
-            for(int i = 0; i < charactersNames.Count; i++)
-            {
-                characters.Add(new Character(GetCharacterByName(charactersNames[i])));
-                characters[^1].ShowingName = showingNames[i];
-            }
-            _scenes.Add(new BattleScene(loadScene, characters));
+            AddBattleScene(loadScene);
         }
     }
 

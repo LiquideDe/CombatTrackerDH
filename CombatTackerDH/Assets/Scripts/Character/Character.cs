@@ -163,8 +163,6 @@ public class Character : IName
             Initiative = rnd.Next(1, 10) + AgilitySuper;
         else
             Initiative = rnd.Next(1,10) + Agility/10;
-
-        Debug.Log($"Agility = {Agility}, AgilistySUper = {AgilitySuper}, Initiative = {Initiative}");
     }
 
     public string Name { get; set; }

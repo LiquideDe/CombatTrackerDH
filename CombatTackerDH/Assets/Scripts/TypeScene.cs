@@ -12,5 +12,6 @@ public enum TypeScene
     CreationImplant,
     DamagePanel,
     TextInfo,
-    CreationTalent
+    CreationTalent,
+    NPCNature
 }
