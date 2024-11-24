@@ -161,6 +161,9 @@ public class Creators
 
     private void LoadEquipments()
     {
+
+        CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/Equipments" + "/Things");
+
         string[] things = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Equipments" + "/Things", "*.JSON");
         foreach (string thing in things)
         {
@@ -169,6 +172,7 @@ public class Creators
             _equipments.Add(new Equipment(equipmentReader.name, equipmentReader.description, equipmentReader.rarity, equipmentReader.amount, equipmentReader.weight));
         }
 
+        CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/Equipments" + "/Armor");
         string[] armors = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Equipments" + "/Armor", "*.JSON");
         foreach (string armor in armors)
         {
@@ -177,6 +181,7 @@ public class Creators
             _equipments.Add(new Armor(armortReader));
         }
 
+        CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/Equipments" + "/Weapons/Melee");
         string[] meleeWeapons = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Equipments" + "/Weapons/Melee", "*.JSON");
         foreach (string melee in meleeWeapons)
         {
@@ -185,6 +190,7 @@ public class Creators
             _equipments.Add(new Weapon(meleeReader));
         }
 
+        CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/Equipments" + "/Weapons/Range");
         string[] rangeWeapons = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Equipments" + "/Weapons/Range", "*.JSON");
         foreach (string range in rangeWeapons)
         {
@@ -193,6 +199,7 @@ public class Creators
             _equipments.Add(new Weapon(rangeReader));
         }
 
+        CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/Equipments" + "/Weapons/Grenade");
         string[] grenades = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Equipments" + "/Weapons/Grenade", "*.JSON");
         foreach (string grenade in grenades)
         {
@@ -204,6 +211,7 @@ public class Creators
 
     private void LoadCharacters()
     {
+        CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/Characters");
         string[] characters = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Characters", "*.JSON");
         foreach (string character in characters)
         {
@@ -250,6 +258,7 @@ public class Creators
 
     private void LoadImplants()
     {
+        CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/Implants");
         string[] implantsJson = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Implants", "*.JSON");
 
         foreach (string implant in implantsJson)
@@ -262,6 +271,7 @@ public class Creators
 
     private void LoadScenes()
     {
+        CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/BattleScenes");
         string[] scenesJson = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/BattleScenes", "*.JSON");
         foreach(string sceneJson in scenesJson)
         {
@@ -366,6 +376,12 @@ public class Creators
         }
 
         return false;
+    }
+
+    private void CheckAndCreateFolderIfFalse(string path)
+    {
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
     }
     
     
