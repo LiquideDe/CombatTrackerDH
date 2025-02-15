@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace CombarTracker
 {
     public class Weapon : Equipment
     {
         private string classWeapon, rof, damage, reload, properties;
-        private int range, penetration, clip, maxClip, totalAmmo, semiAuto, auto;
+        private int range, penetration, clip, typeSound;
 
         public Weapon(JSONRangeReader rangeReader) : base(rangeReader.name, rangeReader.description, rangeReader.rarity, rangeReader.amount, rangeReader.weight)
         {
@@ -19,14 +17,17 @@ namespace CombarTracker
             damage = rangeReader.damage;
             penetration = rangeReader.penetration;
             clip = rangeReader.clip;
-            totalAmmo = clip * 2;
-            maxClip = clip;
             reload = rangeReader.reload;
             properties = rangeReader.properties;
+            typeSound = rangeReader.typeSound;
             List<string> list = new List<string>();
             list = rof.Split(new char[] { '/' }).ToList();
-            int.TryParse(list[1], out semiAuto);
-            int.TryParse(list[2], out auto);
+            int.TryParse(list[1], out int semiauto);
+            int.TryParse(list[2], out int auto);
+            SemiAuto = semiauto;
+            Auto = auto;
+            MaxClip = clip;
+            TotalAmmo = clip * 3;
         }
 
         public Weapon(JSONMeleeReader meleeReader) : base(meleeReader.name, meleeReader.description, meleeReader.rarity, meleeReader.amount, meleeReader.weight)
@@ -60,15 +61,12 @@ namespace CombarTracker
             clip = weapon.Clip;
             reload = weapon.Reload;
             properties = weapon.Properties;
-            if (typeEquipment == TypeEquipment.Range)
-            {
-                totalAmmo = clip * 2;
-                maxClip = clip;
-                List<string> list = new List<string>();
-                list = rof.Split(new char[] { '/' }).ToList();
-                int.TryParse(list[1], out semiAuto);
-                int.TryParse(list[2], out auto);
-            }
+            typeSound = weapon.TypeSound;
+            if (weapon.SemiAuto != 0)
+                SemiAuto = weapon.SemiAuto;
+            if (weapon.Auto != 0)
+                Auto = weapon.Auto;
+            MaxClip = weapon.MaxClip;
         }
 
         public string ClassWeapon { get => classWeapon; }
@@ -79,10 +77,13 @@ namespace CombarTracker
         public int Clip { get => clip; set => clip = value; }
         public string Reload { get => reload; }
         public string Properties { get => properties; }
-        public int TotalAmmo { get => totalAmmo; set => totalAmmo = value; }
-        public int MaxClip { get => maxClip; }
-        public int Auto => auto;
-        public int SemiAuto => semiAuto;
+        public int TypeSound => typeSound;
+        public int SemiAuto { get; private set; }
+        public int Auto { get; private set; }
+        public int MaxClip { get; private set; }
+
+        public int TotalAmmo { get; set; }
     }
 }
+
 

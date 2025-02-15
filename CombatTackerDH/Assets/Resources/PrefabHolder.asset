@@ -15,12 +15,12 @@ MonoBehaviour:
   _mainScene: {fileID: 7909665356424853047, guid: 2f09540e2f444b64c8aebea62b7690f1, type: 3}
   _listUniversal: {fileID: 8756377037503274003, guid: 6fa5b65c22af2d14aa3f9cfc1f3e1b7d, type: 3}
   _listWithNewButton: {fileID: 3277306362855570178, guid: e9ee30b5d5698fd478382c48bd943bd4, type: 3}
-  _creationThing: {fileID: 281938209668581872, guid: 7ed608d2fca06ce48a95057cba806436, type: 3}
-  _creationMelee: {fileID: 7591179093194819001, guid: cb83e84a3ab10fa42a0e5ac325ed7fda, type: 3}
-  _creationGrenade: {fileID: 1192952668458524443, guid: f7e1438e3ad11544fbd1243f4e90e3e1, type: 3}
-  _creationRange: {fileID: 7713028099766641719, guid: dacca3c9392eeb74686c12b6a5995e9d, type: 3}
-  _creationArmor: {fileID: 5690438718450768991, guid: 06757261c7d080c43972b54a958474e9, type: 3}
-  _creationImplant: {fileID: 237101585844127933, guid: bcdbf21e4d8b95f4d982bcce9d1cf503, type: 3}
+  _creationThing: {fileID: 7619161592510571683, guid: bf8cfa72beac5774e92462ba70e991ef, type: 3}
+  _creationMelee: {fileID: 7476109923001524757, guid: 47221e5988495e14692e43d5293ceef5, type: 3}
+  _creationGrenade: {fileID: 4393461766088294898, guid: 311cb2d45aa89bf43808fc803cb31183, type: 3}
+  _creationRange: {fileID: 648878917856675659, guid: a7bcbb9871400da48a5019a1bdf0ac1a, type: 3}
+  _creationArmor: {fileID: 6408959074878856044, guid: 200800e4c62c2b74c89822d315900ef8, type: 3}
+  _creationImplant: {fileID: 1076729413628794959, guid: d5843230159ea5640a19f36660e9cb63, type: 3}
   _creationCharacter: {fileID: 3880100874864026277, guid: b9a6aae4ce5d60f4a8c86d8cfa1adaa4, type: 3}
   _textInfo: {fileID: 3764388071755262497, guid: 94e0f5f1c2fd29843891858ed4e130d3, type: 3}
   _damagePanel: {fileID: 715832743953025158, guid: 324812b52b96db247a24b1d261ec533a, type: 3}

@@ -1,12 +1,7 @@
-using System;
+﻿using System;
 
-namespace CombarTracker
+[Serializable]
+public class JSONTypeReader
 {
-    [Serializable]
-    public class JSONTypeReader
-    {
-        public string typeEquipment;
-    }
+    public string typeEquipment;
 }
-
-

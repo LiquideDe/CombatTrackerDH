@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Zenject;
 using System.IO;
 
 namespace CombarTracker
@@ -22,22 +20,18 @@ namespace CombarTracker
         private List<Trait> _skills = new List<Trait>();
         private List<Trait> _talents = new List<Trait>();
         private List<Trait> _psyPowers = new List<Trait>();
-        private delegate void MethodForListCreateNew();
-        private delegate void MethodForListChooseOne(string name);
 
-        [Inject]
-        private void Construct(Creators creators, AudioManager audioManager, LvlFactory lvlFactory)
-        {
-            _creators = creators;
-            _audioManager = audioManager;
-            _lvlFactory = lvlFactory;
-        }
-
-        public void Initialize(CreationCharacterView view)
+        public CreationCharacterPresenter(CreationCharacterView view, Creators creators, LvlFactory lvlFactory, AudioManager audioManager)
         {
             _view = view;
+            _creators = creators;
+            _lvlFactory = lvlFactory;
+            _audioManager = audioManager;
             Subscribe();
         }
+
+        private delegate void MethodForListCreateNew();
+        private delegate void MethodForListChooseOne(string name);
 
         private void Subscribe()
         {
@@ -109,6 +103,7 @@ namespace CombarTracker
             _audioManager.PlayClick();
             NewArmor newArmor = _lvlFactory.Get(TypeScene.CreationArmor).GetComponent<NewArmor>();
             newArmor.Close += CloseCreationForm;
+            newArmor.Cancel += CloseForm;
             newArmor.ReturnNewEquipment += AddNewEquipment;
             newArmor.WrongInput += _audioManager.PlayWarning;
             _tempView = newArmor;
@@ -139,12 +134,17 @@ namespace CombarTracker
             CloseAllListAndForms();
             _audioManager.PlayClick();
             NewRange newRange = _lvlFactory.Get(TypeScene.CreationRange).GetComponent<NewRange>();
-            newRange.Close += CloseCreationForm;
+            newRange.Cancel += CloseForm;
             newRange.NeedInProperties += ShowPropertiesList;
             newRange.ReturnNewEquipment += AddNewEquipment;
             newRange.WrongInput += _audioManager.PlayWarning;
             _tempView = newRange;
             newRange.Initialize();
+        }
+
+        private void CloseForm(CanDestroyView gameObject)
+        {
+            gameObject.DestroyView();
         }
 
         private void ShowPropertiesList()
@@ -184,7 +184,7 @@ namespace CombarTracker
             CloseAllListAndForms();
             _audioManager.PlayClick();
             NewGrenade newGrenade = _lvlFactory.Get(TypeScene.CreationGrenade).GetComponent<NewGrenade>();
-            newGrenade.Close += CloseCreationForm;
+            newGrenade.Cancel += CloseForm;
             newGrenade.NeedInProperties += ShowPropertiesList;
             newGrenade.ReturnNewEquipment += AddNewEquipment;
             newGrenade.WrongInput += _audioManager.PlayWarning;
@@ -199,7 +199,7 @@ namespace CombarTracker
             CloseAllListAndForms();
             _audioManager.PlayClick();
             NewMelee newMelee = _lvlFactory.Get(TypeScene.CreationMelee).GetComponent<NewMelee>();
-            newMelee.Close += CloseCreationForm;
+            newMelee.Cancel += CloseForm;
             newMelee.NeedInProperties += ShowPropertiesList;
             newMelee.ReturnNewEquipment += AddNewEquipment;
             newMelee.WrongInput += _audioManager.PlayWarning;
@@ -221,7 +221,7 @@ namespace CombarTracker
             CloseAllListAndForms();
             _audioManager.PlayClick();
             CreatorNewEquipment newEquipment = _lvlFactory.Get(TypeScene.CreationThing).GetComponent<CreatorNewEquipment>();
-            newEquipment.Close += CloseCreationForm;
+            newEquipment.Cancel += CloseForm;
             newEquipment.ReturnNewEquipment += AddNewEquipment;
             newEquipment.WrongInput += _audioManager.PlayWarning;
             _tempView = newEquipment;
@@ -315,7 +315,7 @@ namespace CombarTracker
             CloseAllListAndForms();
             _audioManager.PlayClick();
             NewImplant newImplant = _lvlFactory.Get(TypeScene.CreationImplant).GetComponent<NewImplant>();
-            newImplant.Close += CloseCreationForm;
+            newImplant.Cancel += CloseForm;
             newImplant.ReturnImplant += AddNewImplant;
             newImplant.WrongInput += _audioManager.PlayWarning;
             _tempView = newImplant;
@@ -430,6 +430,7 @@ namespace CombarTracker
 
         private bool ChangeLvlInList(string name, int lvl, List<Trait> list)
         {
+            _audioManager.PlayClick();
             foreach (Trait feature in list)
                 if (string.Compare(name, feature.Name) == 0)
                 {

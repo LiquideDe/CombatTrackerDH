@@ -37,10 +37,10 @@ namespace CombarTracker
 
         private void ShowCreationPanel()
         {
-            CreationCharacterPresenter presenter = (CreationCharacterPresenter)_presenterFactory.Get(TypeScene.CreatorCharacter);
+            
             CreationCharacterView view = _lvlFactory.Get(TypeScene.CreatorCharacter).GetComponent<CreationCharacterView>();
+            CreationCharacterPresenter presenter = new CreationCharacterPresenter(view, _creators, _lvlFactory, _audioManager);
             presenter.Close += ShowMainScene;
-            presenter.Initialize(view);
         }
 
         private void ShowMainScene()

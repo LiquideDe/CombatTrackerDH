@@ -1,16 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace CombarTracker
+[Serializable]
+public class JSONRangeReader 
 {
-    [Serializable]
-    public class JSONRangeReader
-    {
-        public string name, description, weaponClass, rof, damage, reload, properties, rarity, typeEquipment;
-        public int range, penetration, clip, amount;
-        public float weight;
-    }
+    public string name, description, weaponClass, rof, damage, reload, properties, rarity, typeEquipment;
+    public int range, penetration, clip, amount, typeSound;
+    public float weight;
 }
-
-
