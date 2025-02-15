@@ -26,3 +26,4 @@ MonoBehaviour:
   _damagePanel: {fileID: 715832743953025158, guid: 324812b52b96db247a24b1d261ec533a, type: 3}
   _creationTalent: {fileID: 8722841523181783873, guid: 634e5a508e1f1f740b764c6c878b9241, type: 3}
   _npcNature: {fileID: 3351425580951629495, guid: 3165854517cc40c4fabd964de99291a3, type: 3}
+  _loading: {fileID: 1365949172951821874, guid: f8c4494a51b165a42ac307e4e5ff4589, type: 3}
