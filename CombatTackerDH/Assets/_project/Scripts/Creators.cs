@@ -48,7 +48,7 @@ namespace CombarTracker
             return null;
         }
 
-        public Trait GetFeatureByName(string name) => GetFeatureFromListByName(name, _traits);
+        public Trait GetTraitByName(string name) => GetFeatureFromListByName(name, _traits);
 
         public Trait GetSkillByName(string name) => GetFeatureFromListByName(name, _skills);
 

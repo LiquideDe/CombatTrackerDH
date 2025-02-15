@@ -16,7 +16,7 @@ namespace CombarTracker
         private CanDestroyView _propertyView;
         private List<MechImplant> _implants = new List<MechImplant>();
         private List<Equipment> _equipments = new List<Equipment>();
-        private List<Trait> _features = new List<Trait>();
+        private List<Trait> _traits = new List<Trait>();
         private List<Trait> _skills = new List<Trait>();
         private List<Trait> _talents = new List<Trait>();
         private List<Trait> _psyPowers = new List<Trait>();
@@ -48,7 +48,7 @@ namespace CombarTracker
             _view.Close += CancelPressed;
             _view.ChangeLvl += ChangeLvl;
             _view.Done += Done;
-            _view.RemoveFeature += RemoveFeature;
+            _view.RemoveTrait += RemoveTrait;
             _view.Warning += _audioManager.PlayWarning;
             _view.CalculateAll += CalculateArmors;
         }
@@ -68,7 +68,7 @@ namespace CombarTracker
             _view.Close -= CancelPressed;
             _view.ChangeLvl -= ChangeLvl;
             _view.Done -= Done;
-            _view.RemoveFeature -= RemoveFeature;
+            _view.RemoveTrait -= RemoveTrait;
             _view.Warning -= _audioManager.PlayWarning;
             _view.CalculateAll -= CalculateArmors;
         }
@@ -234,15 +234,15 @@ namespace CombarTracker
             ShowList(_creators.Skills, AddSkill, "Выберите навык");
         }
 
-        private void AddSkill(string name) => AddFeatureToList(_creators.GetSkillByName(name), _skills);
+        private void AddSkill(string name) => AddTraitToList(_creators.GetSkillByName(name), _skills);
 
         private void ShowFeatures()
         {
             _audioManager.PlayClick();
-            ShowList(_creators.Features, AddFeature, "Выберите черту");
+            ShowList(_creators.Features, AddTrait, "Выберите черту");
         }
 
-        private void AddFeature(string name) => AddFeatureToList(_creators.GetFeatureByName(name), _features);
+        private void AddTrait(string name) => AddTraitToList(_creators.GetTraitByName(name), _traits);
 
         private void ShowTalents()
         {
@@ -277,7 +277,7 @@ namespace CombarTracker
             UpdateFeaturesView();
         }
 
-        private void AddTalent(string name) => AddFeatureToList(_creators.GetTalentByName(name), _talents);
+        private void AddTalent(string name) => AddTraitToList(_creators.GetTalentByName(name), _talents);
 
         private void Showpsypowers()
         {
@@ -285,12 +285,12 @@ namespace CombarTracker
             ShowList(_creators.PsyPowers, AddPsypower, "Выберите пси силу");
         }
 
-        private void AddPsypower(string name) => AddFeatureToList(_creators.GetPsypowerByName(name), _psyPowers);
+        private void AddPsypower(string name) => AddTraitToList(_creators.GetPsypowerByName(name), _psyPowers);
 
-        private void AddFeatureToList(Trait feature, List<Trait> features)
+        private void AddTraitToList(Trait trait, List<Trait> traits)
         {
             _audioManager.PlayDone();
-            features.Add(new Trait(feature));
+            traits.Add(new Trait(trait));
             CloseAllListAndForms();
             UpdateFeaturesView();
         }
@@ -391,22 +391,22 @@ namespace CombarTracker
         {
             _audioManager.PlayDone();
             Unscribe();
-            Character character = new Character(save, _implants, _equipments, _features, _skills, _talents, _psyPowers);
+            Character character = new Character(save, _implants, _equipments, _traits, _skills, _talents, _psyPowers);
             new SaveCharacter(character);
             _creators.Characters.Add(character);
             _view.DestroyView();
             Close?.Invoke();
         }
 
-        private void RemoveFeature(string name)
+        private void RemoveTrait(string name)
         {
             _audioManager.PlayCancel();
-            if (RemoveFeatureFromlist(name, _skills)) { }
-            else if (RemoveFeatureFromlist(name, _talents)) { }
-            else if (RemoveFeatureFromlist(name, _features)) { }
-            else if (RemoveFeatureFromlist(name, _psyPowers)) { }
-            else if (RemoveFeatureFromlist(name, _equipments)) { }
-            else if (RemoveFeatureFromlist(name, _implants)) { }
+            if (RemoveTraitFromlist(name, _skills)) { }
+            else if (RemoveTraitFromlist(name, _talents)) { }
+            else if (RemoveTraitFromlist(name, _traits)) { }
+            else if (RemoveTraitFromlist(name, _psyPowers)) { }
+            else if (RemoveTraitFromlist(name, _equipments)) { }
+            else if (RemoveTraitFromlist(name, _implants)) { }
 
             UpdateFeaturesView();
             UpdateWeapons();
@@ -415,7 +415,7 @@ namespace CombarTracker
         private void ChangeLvl(string name, int lvl)
         {
             if (ChangeLvlInList(name, lvl, _skills)) { }
-            else if (ChangeLvlInList(name, lvl, _features)) { }
+            else if (ChangeLvlInList(name, lvl, _traits)) { }
             else
             {
                 foreach (Equipment equipment in _equipments)
@@ -441,7 +441,7 @@ namespace CombarTracker
             return false;
         }
 
-        private bool RemoveFeatureFromlist<T>(string name, List<T> list) where T : IName
+        private bool RemoveTraitFromlist<T>(string name, List<T> list) where T : IName
         {
             foreach (T item in list)
                 if (string.Compare(name, item.Name, true) == 0)
@@ -449,7 +449,6 @@ namespace CombarTracker
                     list.Remove(item);
                     return true;
                 }
-
             return false;
         }
 
@@ -457,7 +456,7 @@ namespace CombarTracker
         {
             List<Trait> features = new List<Trait>();
             features.AddRange(_skills);
-            features.AddRange(_features);
+            features.AddRange(_traits);
             features.AddRange(_talents);
             features.AddRange(_psyPowers);
 
@@ -467,7 +466,7 @@ namespace CombarTracker
             foreach (MechImplant implant in _implants)
                 features.Add(new Trait(implant.Name));
 
-            _view.UpdateListFeatures(features);
+            _view.UpdateListTraits(features);
         }
 
         private void UpdateWeapons()
@@ -487,7 +486,7 @@ namespace CombarTracker
             int agility = _view.Agility() / 10;
             SaveLoadCharacter save = new SaveLoadCharacter();
 
-            foreach (Trait feature in _features)
+            foreach (Trait feature in _traits)
                 if (string.Compare(feature.Name, "Демонический") == 0)
                     save.toughnessSuper += feature.Lvl;
                 else if (string.Compare(feature.Name, "Сверхъестественная Выносливость") == 0)

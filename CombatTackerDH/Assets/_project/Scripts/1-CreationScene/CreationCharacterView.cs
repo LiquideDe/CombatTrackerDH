@@ -43,7 +43,7 @@ namespace CombarTracker
 
         public event Action AddSkill, AddTalent, AddFeature, AddPsypower, AddImplant, AddWeapon, AddBallistic, AddGrenade, AddArmor, AddThing, Warning, CalculateAll;
         public event Action<SaveLoadCharacter> Done;
-        public event Action<string> RemoveFeature;
+        public event Action<string> RemoveTrait;
         public event Action<string, int> ChangeLvl;
 
         private List<ItemWithInput> _featuresItems = new List<ItemWithInput>();
@@ -83,19 +83,19 @@ namespace CombarTracker
             _buttonCalculateAll.onClick.RemoveAllListeners();
         }
 
-        public void UpdateListFeatures(List<Trait> features)
+        public void UpdateListTraits(List<Trait> traits)
         {
             foreach (ItemWithInput item in _featuresItems)
                 Destroy(item.gameObject);
 
             _featuresItems.Clear();
 
-            foreach (Trait feature in features)
+            foreach (Trait trait in traits)
             {
                 ItemWithInput item = Instantiate(_featurePrefab, _contentFeatures);
-                item.ChooseThis += RemoveThisFeature;
+                item.ChooseThis += RemoveThisTrait;
                 item.ChangeLvl += ChangeLvlPressed;
-                item.Initialize(feature.Name, feature.Lvl);
+                item.Initialize(trait.Name, trait.Lvl);
                 _featuresItems.Add(item);
             }
         }
@@ -163,7 +163,7 @@ namespace CombarTracker
 
         }
 
-        private void RemoveThisFeature(string name) => RemoveFeature?.Invoke(name);
+        private void RemoveThisTrait(string name) => RemoveTrait?.Invoke(name);
 
         private void ChangeLvlPressed(string name, int lvl) => ChangeLvl?.Invoke(name, lvl);
 
