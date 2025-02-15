@@ -106,8 +106,16 @@ namespace CombarTracker
                 if (string.Compare(name, feature.Name, true) == 0)
                 {
                     text = $"{name} \n {feature.Description}";
+                    return text;
                 }
-
+            foreach (var item in _equipments)
+            {
+                if (string.Compare(name, item.Name, true) == 0)
+                {
+                    text = $"{name} \n {item.Description}";
+                    return text;
+                }
+            }
             return text;
         }
 
