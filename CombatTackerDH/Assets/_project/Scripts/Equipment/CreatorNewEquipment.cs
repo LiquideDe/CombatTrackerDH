@@ -10,7 +10,7 @@ namespace CombarTracker
     public class CreatorNewEquipment : ViewWithButtonsDoneAndCancel
     {
 
-        [SerializeField] protected TMP_InputField _inputName, _inputWeight, _inputRarity, _description;
+        [SerializeField] protected TMP_InputField _inputName, _inputWeight, _inputRarity, _inputDescription;
 
         public event Action<Equipment> ReturnNewEquipment;
         public event Action WrongInput;
@@ -34,7 +34,7 @@ namespace CombarTracker
                     rarity = _inputRarity.text,
                     typeEquipment = Equipment.TypeEquipment.Thing.ToString(),
                     amount = 1,
-                    description = _description.text
+                    description = _inputDescription.text
                 };
                 SaveEquipment($"{Application.dataPath}/StreamingAssets/Equipments/Things/{reader.name}.JSON", reader);
                 Equipment equipment = new Equipment(_inputName.text, "", _inputRarity.text, 1, weight);

@@ -67,6 +67,7 @@ namespace CombarTracker
 
             inputDamage.text = amount.ToString();
             inputBonusDamage.text = bonusDamage.ToString();
+            _inputDescription.text = weapon.Description;
 
             switch (typeDamage)
             {
@@ -117,7 +118,9 @@ namespace CombarTracker
                     damage = MakeDamageText(),
                     typeEquipment = Equipment.TypeEquipment.Melee.ToString(),
                     amount = 1,
-                    rarity = _inputRarity.text
+                    rarity = _inputRarity.text,
+                    description = _inputDescription.text
+
                 };
 
                 if (_isNewWeapon)
@@ -218,5 +221,5 @@ namespace CombarTracker
         private void NeedInPropertiesPressed() => NeedInProperties?.Invoke();
 
     }
-}
 
+}

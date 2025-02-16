@@ -76,7 +76,8 @@ namespace CombarTracker
                 else
                     armorReader.typeEquipment = Equipment.TypeEquipment.Armor.ToString();
 
-                armorReader.description += $"Броня {armor}, максимальная ловкость {maxAgility}.";
+                armorReader.description += $"Броня {armor}, максимальная ловкость {maxAgility}. ";
+                armorReader.description += _inputDescription.text;
                 armorReader.amount = 1;
                 Armor armorEq = new Armor(armorReader);
                 SaveEquipment($"{Application.dataPath}/StreamingAssets/Equipments/Armor/{armorReader.name}.JSON", armorReader);
