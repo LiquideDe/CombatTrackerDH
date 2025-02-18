@@ -37,7 +37,7 @@ namespace CombarTracker
             saveLoad.ballisticSkill = character.BallisticSkill;
             saveLoad.ballisticSkillSuper = character.BallisticSkillSuper;
             saveLoad.equipments = PackListInText(character.Equipments);
-            saveLoad.features = PackListInText(character.Features);
+            saveLoad.traits = PackListInText(character.Features);
             saveLoad.fellowship = character.Fellowship;
             saveLoad.fellowshipSuper = character.FellowshipSuper;
             saveLoad.full = character.Full;
@@ -48,7 +48,7 @@ namespace CombarTracker
             saveLoad.intelligence = character.Intelligence;
             saveLoad.intelligenceSuper = character.IntelligenceSuper;
             saveLoad.isTurned = character.IsTurned;
-            saveLoad.lvlsOfFeatures = PackLvlFeaturesInText(character.Features);
+            saveLoad.lvlsOfTraits = PackLvlFeaturesInText(character.Features);
             saveLoad.lvlsOfSkills = PackLvlFeaturesInText(character.Skills);
             saveLoad.name = character.Name;
             saveLoad.natisk = character.Natisk;

@@ -5,7 +5,7 @@ namespace CombarTracker
     [Serializable]
     public class SaveLoadCharacter
     {
-        public string name, showingName, implants, equipments, features, skills, talents, psypowers, amountsEquipments, lvlsOfFeatures, lvlsOfSkills;
+        public string name, showingName, implants, equipments, traits, skills, talents, psypowers, amountsEquipments, lvlsOfTraits, lvlsOfSkills;
         public int wounds;
         public int weaponSkill, ballisticSkill, strength, toughness, agility, intelligence, perception, willpower, fellowship, influence;
         public int weaponSkillSuper, ballisticSkillSuper, strengthSuper, toughnessSuper, agilitySuper, intelligenceSuper, perceptionSuper, willpowerSuper, fellowshipSuper, influenceSuper;

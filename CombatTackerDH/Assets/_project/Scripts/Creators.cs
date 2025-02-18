@@ -237,19 +237,20 @@ namespace CombarTracker
 
         private async UniTask LoadCharacters()
         {
+            LoadCharacterFromDH loadCharacterAdapter = new LoadCharacterFromDH();
             CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/Characters");
             string[] characters = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/Characters", "*.JSON");
-            foreach (string character in characters)
+            foreach (string pathToCharacter in characters)
             {
-                string[] data = File.ReadAllLines(character);
+                string[] data = File.ReadAllLines(pathToCharacter);
                 SaveLoadCharacter characterReader = JsonUtility.FromJson<SaveLoadCharacter>(data[0]);
                 List<Trait> skills = new List<Trait>();
                 skills.AddRange(ReadPropertiesFromString(characterReader.skills));
                 SetLvlsToTraits(characterReader.lvlsOfSkills, skills);
 
-                List<Trait> features = new List<Trait>();
-                features.AddRange(ReadPropertiesFromString(characterReader.features));
-                SetLvlsToTraits(characterReader.lvlsOfFeatures, features);
+                List<Trait> traits = new List<Trait>();
+                traits.AddRange(ReadPropertiesFromString(characterReader.traits));
+                SetLvlsToTraits(characterReader.lvlsOfTraits, traits);
 
                 List<Trait> talents = new List<Trait>();
                 talents.AddRange(ReadPropertiesFromString(characterReader.talents));
@@ -278,7 +279,15 @@ namespace CombarTracker
                     equipments[i].Amount = amount;
                 }
 
-                _characters.Add(new Character(characterReader, implants, equipments, features, skills, talents, psypowers));
+                _characters.Add(new Character(characterReader, implants, equipments, traits, skills, talents, psypowers));
+                await UniTask.Yield();
+            }
+
+            CheckAndCreateFolderIfFalse($"{Application.dataPath}/StreamingAssets/CharactersFromDH");
+            string[] charactersFromDH = Directory.GetFiles($"{Application.dataPath}/StreamingAssets/CharactersFromDH", "*.JSON");
+            foreach (var item in charactersFromDH)
+            {
+                _characters.Add(loadCharacterAdapter.LoadCharacter(item, this));
                 await UniTask.Yield();
             }
         }

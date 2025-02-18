@@ -8,16 +8,16 @@ namespace CombarTracker
     {
         private List<MechImplant> _implants = new List<MechImplant>();
         private List<Equipment> _equipments = new List<Equipment>();
-        private List<Trait> _features = new List<Trait>();
+        private List<Trait> _traits = new List<Trait>();
         private List<Trait> _skills = new List<Trait>();
         private List<Trait> _talents = new List<Trait>();
         private List<Trait> _psyPowers = new List<Trait>();
 
-        public Character(SaveLoadCharacter saveLoad, List<MechImplant> implants, List<Equipment> equipments, List<Trait> features, List<Trait> skills, List<Trait> talents, List<Trait> psyPowers)
+        public Character(SaveLoadCharacter saveLoad, List<MechImplant> implants, List<Equipment> equipments, List<Trait> traits, List<Trait> skills, List<Trait> talents, List<Trait> psyPowers)
         {
             _implants.AddRange(implants);
             _equipments.AddRange(equipments);
-            _features.AddRange(features);
+            _traits.AddRange(traits);
             _skills.AddRange(skills);
             _talents.AddRange(talents);
             _psyPowers.AddRange(psyPowers);
@@ -154,7 +154,7 @@ namespace CombarTracker
 
             _implants.AddRange(character.Implants);
             _equipments.AddRange(character.Equipments);
-            _features.AddRange(character.Features);
+            _traits.AddRange(character.Features);
             _skills.AddRange(character.Skills);
             _talents.AddRange(character.Talents);
             _psyPowers.AddRange(character.PsyPowers);
@@ -237,7 +237,7 @@ namespace CombarTracker
 
         public List<MechImplant> Implants => _implants;
         public List<Equipment> Equipments => _equipments;
-        public List<Trait> Features => _features;
+        public List<Trait> Features => _traits;
         public List<Trait> Skills => _skills;
         public List<Trait> Talents => _talents;
         public List<Trait> PsyPowers => _psyPowers;
