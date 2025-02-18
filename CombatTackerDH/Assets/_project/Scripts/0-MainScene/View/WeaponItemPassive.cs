@@ -63,7 +63,6 @@ namespace CombarTracker
             if (lb < 0) return property;
 
             string text = property.Substring(0, lb);
-            Debug.Log($"Левая скобка {lb},{text}, original {property}");
             return text;
         }
 

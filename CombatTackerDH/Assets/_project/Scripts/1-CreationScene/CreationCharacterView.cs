@@ -17,17 +17,27 @@ namespace CombarTracker
         [SerializeField] private TMP_InputField _bodyArmor, _bodyAblArmor, _bodyTotal;
         [SerializeField] private TMP_InputField _rightLegArmor, _rightLegAblArmor, _rightLegTotal;
         [SerializeField] private TMP_InputField _leftLegArmor, _leftLegAblArmor, _leftLegTotal;
+        [field: SerializeField] public TMP_InputField WeaponSkill { get; private set; }
+        [field: SerializeField] public TMP_InputField BallisticSkill { get; private set; }
+        [field: SerializeField] public TMP_InputField Strength { get; private set; }
+        [field: SerializeField] public TMP_InputField Toughness { get; private set; }
+        [field: SerializeField] public TMP_InputField Agility { get; private set; }
+        [field: SerializeField] public TMP_InputField Intelligence { get; private set; }
+        [field: SerializeField] public TMP_InputField Perception { get; private set; }
+        [field: SerializeField] public TMP_InputField Willpower { get; private set; }
+        [field: SerializeField] public TMP_InputField Fellowship { get; private set; }
+        [field: SerializeField] public TMP_InputField Influence { get; private set; }
 
-        [SerializeField] private TMP_InputField _weaponSkill, _weaponSkillSuper;
-        [SerializeField] private TMP_InputField _ballisticSkill, _ballisticSkillSuper;
-        [SerializeField] private TMP_InputField _strength, _strengthSuper;
-        [SerializeField] private TMP_InputField _toughness, _toughnessSuper;
-        [SerializeField] private TMP_InputField _agility, _agilitySuper;
-        [SerializeField] private TMP_InputField _intelligence, _intelligenceSuper;
-        [SerializeField] private TMP_InputField _perception, _perceptionSuper;
-        [SerializeField] private TMP_InputField _willpower, _willpowerSuper;
-        [SerializeField] private TMP_InputField _fellowship, _fellowshipSuper;
-        [SerializeField] private TMP_InputField _influence, _influenceSuper;
+        [SerializeField] private TMP_InputField _weaponSkillSuper;
+        [SerializeField] private TMP_InputField _ballisticSkillSuper;
+        [SerializeField] private TMP_InputField _strengthSuper;
+        [SerializeField] private TMP_InputField _toughnessSuper;
+        [SerializeField] private TMP_InputField _agilitySuper;
+        [SerializeField] private TMP_InputField _intelligenceSuper;
+        [SerializeField] private TMP_InputField _perceptionSuper;
+        [SerializeField] private TMP_InputField _willpowerSuper;
+        [SerializeField] private TMP_InputField _fellowshipSuper;
+        [SerializeField] private TMP_InputField _influenceSuper;
 
         [SerializeField] private TMP_InputField _half, _full, _natisk, _run;
 
@@ -115,18 +125,6 @@ namespace CombarTracker
             }
         }
 
-        public int Toughness()
-        {
-            int.TryParse(_toughness.text, out int toughness);
-            return toughness;
-        }
-
-        public int Agility()
-        {
-            int.TryParse(_agility.text, out int agility);
-            return agility;
-        }
-
         public void SetArmors(SaveLoadCharacter save)
         {
             _headAblArmor.text = save.armorAblHead.ToString();
@@ -158,8 +156,26 @@ namespace CombarTracker
             _natisk.text = save.natisk.ToString();
             _run.text = save.run.ToString();
 
-            if (save.toughnessSuper > 0)
-                _toughnessSuper.text = save.toughnessSuper.ToString();
+            var statsMapping = new List<(int value, TMP_InputField textField)>
+        {
+            (save.toughnessSuper, _toughnessSuper),
+            (save.weaponSkillSuper, _weaponSkillSuper),
+            (save.ballisticSkillSuper, _ballisticSkillSuper),
+            (save.strengthSuper, _strengthSuper),
+            (save.agilitySuper, _agilitySuper),
+            (save.intelligenceSuper, _intelligenceSuper),
+            (save.perceptionSuper, _perceptionSuper),
+            (save.willpowerSuper, _willpowerSuper),
+            (save.fellowshipSuper, _fellowshipSuper)
+        };
+
+            foreach (var stat in statsMapping)
+            {
+                if (stat.value > 0)
+                {
+                    stat.textField.text = stat.value.ToString();
+                }
+            }
 
         }
 
@@ -192,8 +208,8 @@ namespace CombarTracker
         private void DonePressed()
         {
             if (_headTotal.text.Length > 0 && _rightHandTotal.text.Length > 0 && _leftHandTotal.text.Length > 0 && _bodyTotal.text.Length > 0 && _rightLegTotal.text.Length > 0 &&
-               _leftLegTotal.text.Length > 0 && _weaponSkill.text.Length > 0 && _ballisticSkill.text.Length > 0 && _strength.text.Length > 0 && _toughness.text.Length > 0 &&
-               _agility.text.Length > 0 && _intelligence.text.Length > 0 && _perception.text.Length > 0 && _willpower.text.Length > 0 && _fellowship.text.Length > 0 && _influence.text.Length > 0 &&
+               _leftLegTotal.text.Length > 0 && WeaponSkill.text.Length > 0 && BallisticSkill.text.Length > 0 && Strength.text.Length > 0 && Toughness.text.Length > 0 &&
+               Agility.text.Length > 0 && Intelligence.text.Length > 0 && Perception.text.Length > 0 && Willpower.text.Length > 0 && Fellowship.text.Length > 0 && Influence.text.Length > 0 &&
                _half.text.Length > 0 && _full.text.Length > 0 && _natisk.text.Length > 0 && _run.text.Length > 0 && _nameCharacter.text.Length > 0 && _wounds.text.Length > 0)
             {
                 SaveLoadCharacter loadCharacter = new SaveLoadCharacter();
@@ -224,16 +240,16 @@ namespace CombarTracker
                 int.TryParse(_leftLegAblArmor.text, out loadCharacter.armorAblLeftLeg);
                 int.TryParse(_leftLegTotal.text, out loadCharacter.armorTotalLeftLeg);
 
-                int.TryParse(_weaponSkill.text, out loadCharacter.weaponSkill);
-                int.TryParse(_ballisticSkill.text, out loadCharacter.ballisticSkill);
-                int.TryParse(_strength.text, out loadCharacter.strength);
-                int.TryParse(_toughness.text, out loadCharacter.toughness);
-                int.TryParse(_agility.text, out loadCharacter.agility);
-                int.TryParse(_intelligence.text, out loadCharacter.intelligence);
-                int.TryParse(_perception.text, out loadCharacter.perception);
-                int.TryParse(_willpower.text, out loadCharacter.willpower);
-                int.TryParse(_fellowship.text, out loadCharacter.fellowship);
-                int.TryParse(_influence.text, out loadCharacter.influence);
+                int.TryParse(WeaponSkill.text, out loadCharacter.weaponSkill);
+                int.TryParse(BallisticSkill.text, out loadCharacter.ballisticSkill);
+                int.TryParse(Strength.text, out loadCharacter.strength);
+                int.TryParse(Toughness.text, out loadCharacter.toughness);
+                int.TryParse(Agility.text, out loadCharacter.agility);
+                int.TryParse(Intelligence.text, out loadCharacter.intelligence);
+                int.TryParse(Perception.text, out loadCharacter.perception);
+                int.TryParse(Willpower.text, out loadCharacter.willpower);
+                int.TryParse(Fellowship.text, out loadCharacter.fellowship);
+                int.TryParse(Influence.text, out loadCharacter.influence);
 
                 int.TryParse(_weaponSkillSuper.text, out loadCharacter.weaponSkillSuper);
                 int.TryParse(_ballisticSkillSuper.text, out loadCharacter.ballisticSkillSuper);

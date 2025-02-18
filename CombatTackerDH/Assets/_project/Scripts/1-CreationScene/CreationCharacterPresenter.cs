@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
+using System.Linq;
+using static UnityEditor.Progress;
+using UnityEngine.TextCore.Text;
 
 namespace CombarTracker
 {
@@ -117,7 +120,6 @@ namespace CombarTracker
         }
         private void AddNewEquipment(Equipment equipment)
         {
-            Debug.Log($"Добавили новый {equipment.Name}");
             CloseAllListAndForms();
             _audioManager.PlayDone();
             _equipments.Add(equipment);
@@ -482,26 +484,63 @@ namespace CombarTracker
         private void CalculateArmors()
         {
             _audioManager.PlayClick();
-            int toughness = _view.Toughness() / 10;
-            int agility = _view.Agility() / 10;
+            int.TryParse(_view.WeaponSkill.text, out int weaponSkill);
+            int.TryParse(_view.BallisticSkill.text, out int ballisticSkill);
+            int.TryParse(_view.Strength.text, out int strength);
+            int.TryParse(_view.Toughness.text, out int toughness);
+            int.TryParse(_view.Agility.text, out int agility);
+            int.TryParse(_view.Intelligence.text, out int intelligence);
+            int.TryParse(_view.Perception.text, out int perception);
+            int.TryParse(_view.Willpower.text, out int willpower);
+            int.TryParse(_view.Fellowship.text, out int fellowship);
+
+            toughness /= 10;
+
             SaveLoadCharacter save = new SaveLoadCharacter();
 
-            foreach (Trait feature in _traits)
-                if (string.Compare(feature.Name, "Демонический") == 0)
-                    save.toughnessSuper += feature.Lvl;
-                else if (string.Compare(feature.Name, "Сверхъестественная Выносливость") == 0)
-                    save.toughnessSuper += feature.Lvl;
-                else if (string.Compare(feature.Name, "Машина") == 0)
+            foreach (Trait trait in _traits)            
+                switch (trait.Name)
                 {
-                    save.armorAblBody += feature.Lvl;
-                    save.armorAblHead += feature.Lvl;
-                    save.armorAblLeftHand += feature.Lvl;
-                    save.armorAblLeftLeg += feature.Lvl;
-                    save.armorAblRightHand += feature.Lvl;
-                    save.armorAblRightLeg += feature.Lvl;
-                }
-                else if (string.Compare(feature.Name, "Сверхъестественная Ловкость") == 0)
-                    save.agilitySuper += feature.Lvl;
+                    case "Сверхъестественная Навык Рукопашной":
+                        save.weaponSkillSuper = trait.Lvl + weaponSkill / 10;
+                        break;
+                    case "Сверхъестественная Навык Стрельбы":
+                        save.ballisticSkillSuper = trait.Lvl + ballisticSkill / 10;
+                        break;
+                    case "Сверхъестественная Сила":
+                        save.strengthSuper = trait.Lvl + strength / 10;
+                        break;
+                    case "Сверхъестественная Выносливость":
+                        save.toughnessSuper += trait.Lvl;
+                        break;
+                    case "Сверхъестественная Ловкость":
+                        save.agilitySuper = trait.Lvl + agility / 10;
+                        break;
+                    case "Сверхъестественная Интеллект":
+                        save.intelligenceSuper = trait.Lvl + intelligence / 10;
+                        break;
+                    case "Сверхъестественная Восприятие":
+                        save.perceptionSuper = trait.Lvl + perception / 10;
+                        break;
+                    case "Сверхъестественная Сила Воли":
+                        save.willpowerSuper = trait.Lvl + willpower / 10;
+                        break;
+                    case "Сверхъестественная Общительность":
+                        save.fellowshipSuper = trait.Lvl + fellowship / 10;
+                        break;
+                    case "Демонический":
+                        save.toughnessSuper += trait.Lvl;
+                        break;
+                    case "Машина":
+                        AddAmountToArmor(save, trait.Lvl);
+                        break;
+                    case "Природная броня":
+                        AddAmountToArmor(save, trait.Lvl);
+                        break;
+                }          
+
+            if (save.toughnessSuper > 0)
+                save.toughnessSuper += toughness;
 
             foreach (MechImplant implant in _implants)
             {
@@ -537,76 +576,63 @@ namespace CombarTracker
                 }
             }
 
-
             List<Armor> armors = new List<Armor>();
+            List<Armor> shields = new List<Armor>();
             foreach (Equipment equipment in _equipments)
                 if (equipment.TypeEq == Equipment.TypeEquipment.Armor)
                     armors.Add((Armor)equipment);
+                else if(equipment.TypeEq == Equipment.TypeEquipment.Shield)
+                    shields.Add((Armor)equipment);
 
-            if (armors.Count > 1)
+            if(shields.Count >= 1)
             {
-                armors.Sort(
-                delegate (Armor armor1, Armor armor2)
-                {
-                    return armor2.DefHead.CompareTo(armor1.DefHead);
-                }
-                );
-                save.armorHead += armors[0].DefHead;
-
-                armors.Sort(
-                delegate (Armor armor1, Armor armor2)
-                {
-                    return armor2.DefHands.CompareTo(armor1.DefHands);
-                }
-                );
-                save.armorLeftHand += armors[0].DefHands;
-                save.armorRightHand += armors[0].DefHands;
-
-                armors.Sort(
-                delegate (Armor armor1, Armor armor2)
-                {
-                    return armor2.DefBody.CompareTo(armor1.DefBody);
-                }
-                );
-                save.armorBody += armors[0].DefBody;
-
-                armors.Sort(
-                delegate (Armor armor1, Armor armor2)
-                {
-                    return armor2.DefLegs.CompareTo(armor1.DefLegs);
-                }
-                );
-                save.armorLeftLeg += armors[0].DefLegs;
-                save.armorRightLeg += armors[0].DefLegs;
-            }
-            else if (armors.Count == 1)
-            {
-                save.armorHead += armors[0].DefHead;
-                save.armorLeftHand += armors[0].DefHands;
-                save.armorRightHand += armors[0].DefHands;
-                save.armorBody += armors[0].DefBody;
-                save.armorLeftLeg += armors[0].DefLegs;
-                save.armorRightLeg += armors[0].DefLegs;
+                save.armorHead += shields.Max(a => a.DefHead);
+                save.armorLeftHand += shields.Max(a => a.DefHands);
+                save.armorBody += shields.Max(a => a.DefBody);
+                save.armorLeftLeg += shields.Max(a => a.DefLegs);
+                save.armorRightLeg += shields.Max(a => a.DefLegs);
             }
 
-            save.armorTotalHead += save.armorHead + save.armorAblHead + toughness + save.toughnessSuper;
-            save.armorTotalRightHand += save.armorRightHand + save.armorAblRightHand + toughness + save.toughnessSuper;
-            save.armorTotalLeftHand += save.armorLeftHand + save.armorAblLeftHand + toughness + save.toughnessSuper;
-            save.armorTotalBody += save.armorBody + save.armorAblBody + toughness + save.toughnessSuper;
-            save.armorTotalRightLeg += save.armorRightLeg + save.armorAblRightLeg + toughness + save.toughnessSuper;
-            save.armorTotalLeftLeg += save.armorLeftLeg + save.armorAblLeftLeg + toughness + save.toughnessSuper;
+            if (armors.Count >= 1)
+            {
+                save.armorHead += armors.Max(a => a.DefHead);
+                save.armorLeftHand += armors.Max(a => a.DefHands);
+                save.armorRightHand += armors.Max(a => a.DefHands);
+                save.armorBody += armors.Max(a => a.DefBody);
+                save.armorLeftLeg += armors.Max(a => a.DefLegs);
+                save.armorRightLeg += armors.Max(a => a.DefLegs);
+            }
 
+            if(save.toughnessSuper > toughness)
+                toughness = save.toughnessSuper;
+
+            save.armorTotalHead += save.armorHead + toughness;
+            save.armorTotalRightHand += save.armorRightHand +  toughness;
+            save.armorTotalLeftHand += save.armorLeftHand + toughness;
+            save.armorTotalBody += save.armorBody + toughness;
+            save.armorTotalRightLeg += save.armorRightLeg + toughness;
+            save.armorTotalLeftLeg += save.armorLeftLeg + toughness;
+
+            agility /= 10;
             agility += save.agilitySuper;
 
             save.half = agility;
-            save.full = save.half * 2;
-            save.natisk = save.half * 3;
-            save.run = save.half * 6;
+            save.full = agility * 2;
+            save.natisk = agility * 3;
+            save.run = agility * 6;
 
             _view.SetArmors(save);
         }
 
-
+        private void AddAmountToArmor(SaveLoadCharacter save, int amount)
+        {
+            save.armorBody += amount;
+            save.armorHead += amount;
+            save.armorLeftHand += amount;
+            save.armorLeftLeg += amount;
+            save.armorRightHand += amount;
+            save.armorRightLeg += amount;
+        }
     }
 
 }
