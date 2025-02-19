@@ -5,7 +5,6 @@ namespace CombarTracker
     public class LvlMediator
     {
         private LvlFactory _lvlFactory;
-        private PresenterFactory _presenterFactory;
         private MainScenePresenter _mainScene;
         private AudioManager _audioManager;
         private Creators _creators;

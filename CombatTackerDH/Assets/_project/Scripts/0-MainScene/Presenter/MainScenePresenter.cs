@@ -18,7 +18,6 @@ namespace CombarTracker
         private List<Character> _characters = new List<Character>();
         private Creators _creators;
         private LvlFactory _lvlFactory;
-        private PresenterFactory _presenterFactory;
         private CanDestroyView _tempView;
 
         public MainScenePresenter(AudioManager audioManager, MainSceneView view, Creators creators, LvlFactory lvlFactory, WeaponView weaponView)
@@ -159,10 +158,9 @@ namespace CombarTracker
 
             _audioManager.PlayClick();
             DamagePanelView damageView = _lvlFactory.Get(TypeScene.DamagePanel).GetComponent<DamagePanelView>();
-            DamagePanelPresenter damagePresenter = (DamagePanelPresenter)_presenterFactory.Get(TypeScene.DamagePanel);
+            DamagePanelPresenter damagePresenter = new DamagePanelPresenter(_audioManager, damageView, _character);
             damagePresenter.ReturnTextToArmor += ShowDamage;
             damagePresenter.DamageToShelter += DamageToShelter;
-            damagePresenter.Initialize(damageView, _character);
         }
 
         private void DamageToShelter()

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System;
-using Zenject;
 
 namespace CombarTracker
 {
@@ -14,12 +13,9 @@ namespace CombarTracker
         private Character _character;
         private int[] _placesWithDamage = new int[6];
 
-        [Inject]
-        private void Construct(AudioManager audioManager) => _audioManager = audioManager;
-
-
-        public void Initialize(DamagePanelView view, Character character)
+        public DamagePanelPresenter(AudioManager audioManager, DamagePanelView view, Character character)
         {
+            _audioManager = audioManager;
             _view = view;
             _character = character;
             Subscribe();

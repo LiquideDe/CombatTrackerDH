@@ -10,7 +10,6 @@ namespace CombarTracker
         {
             Container.Bind<PrefabHolder>().FromInstance(_prefabHolder).AsSingle();
             Container.Bind<LvlFactory>().AsSingle();
-            Container.Bind<PresenterFactory>().AsSingle();
             Container.Bind<LvlMediator>().AsSingle();
         }
     }
