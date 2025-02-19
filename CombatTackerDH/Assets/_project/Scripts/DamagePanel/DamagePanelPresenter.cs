@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 namespace CombarTracker
 {
@@ -18,6 +19,7 @@ namespace CombarTracker
             _audioManager = audioManager;
             _view = view;
             _character = character;
+            _view.SetHordeOrNot(character.IsHorde);
             Subscribe();
         }
 
@@ -74,6 +76,12 @@ namespace CombarTracker
         {
             int damage = 0;
             int bToughness = totalDef - armor;
+            int bWillpower;
+            if (_character.WillpowerSuper > 0)
+                bWillpower = _character.WillpowerSuper;
+            else
+                bWillpower = _character.Willpower / 10;
+
             armor += shelter;
             if (!item.IsIgnoreArmor && !item.IsIgnoreToughness && !item.IsWarp)
             {
@@ -98,17 +106,28 @@ namespace CombarTracker
                 else
                     damage = item.Damage;
             }
-            else if (item.IsWarp)
+            else if (item.IsIgnoreArmor && item.IsWarp)
             {
-                damage = item.Damage - (_character.Willpower / 10);
+                damage = item.Damage - bWillpower;
+            }
+            else if (!item.IsIgnoreArmor && item.IsWarp)
+            {
+                if (armor < item.Penetration)
+                {
+                    damage = item.Damage - bWillpower;
+                }
+                else
+                {
+                    damage = item.Damage - (armor - item.Penetration + bWillpower);
+                }
             }
             else if (item.IsIgnoreArmor && item.IsIgnoreToughness && !item.IsWarp)
             {
                 damage = item.Damage;
             }
-
+            Debug.Log($"item.DamageToMagnitude = {item.DamageToMagnitude}");
             if (damage > 0 && _character.IsHorde)
-                _placesWithDamage[idPlace] += 1;
+                _placesWithDamage[idPlace] += item.DamageToMagnitude;
 
             else
                 _placesWithDamage[idPlace] += damage;

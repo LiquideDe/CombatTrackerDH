@@ -8,17 +8,19 @@ namespace CombarTracker
 {
     public class DamagePanelView : MonoBehaviour
     {
-        [SerializeField] TMP_InputField _inputPenetration, _inputPlace, _inputDamage;
+        [SerializeField] TMP_InputField _inputPenetration, _inputPlace, _inputDamage, _inputDamageHorde;
         [SerializeField] Toggle _toggleIsWarp, _toggleIsIgnoreArmor, _toggleIsIgnoreToughness;
         [SerializeField] DamageItem _damageItemPrefab;
         [SerializeField] Transform _contentForDamageItems;
         [SerializeField] Button _buttonAddDamage, _buttonCancel, _buttonDone;
+        [SerializeField] GameObject _placeDamageObject, _hordeDamageObject;
 
         public event Action<List<DamageItem>> CalculateDamage;
         public event Action Cancel, PlayClick, PlayWarning;
 
         private List<DamageItem> _damageItems = new List<DamageItem>();
         private int[] placesTakeDamage = new int[6];
+        private bool _isHorde;
 
         private void OnEnable()
         {
@@ -42,6 +44,22 @@ namespace CombarTracker
 
         public void DestroyView() => Destroy(gameObject);
 
+        public void SetHordeOrNot(bool isHorde)
+        {
+            _isHorde = isHorde;
+            if (isHorde)
+            {
+                _placeDamageObject.SetActive(false);
+                _hordeDamageObject.SetActive(true);
+                _inputDamageHorde.text = "1";
+            }
+            else
+            {
+                _placeDamageObject.SetActive(true);
+                _hordeDamageObject.SetActive(false);
+            }
+        }
+
         private void CancelPressed() => Cancel?.Invoke();
 
         private void CalculateDamagePressed() => CalculateDamage?.Invoke(_damageItems);
@@ -52,7 +70,7 @@ namespace CombarTracker
 
         private void AddDamagePressed()
         {
-            if (_inputPlace.text.Length > 0 && _inputDamage.text.Length > 0)
+            if (_inputDamage.text.Length > 0)
             {
                 PlayClickPressed(true);
                 SetNewDamage(_inputPlace.text, _inputDamage.text, _inputPenetration.text);
@@ -66,7 +84,15 @@ namespace CombarTracker
         private void SetNewDamage(string placeText, string damageText, string penetrationText)
         {
             _damageItems.Add(Instantiate(_damageItemPrefab, _contentForDamageItems));
-            _damageItems[^1].Initialize(placeText, damageText, penetrationText, _toggleIsWarp.isOn, _toggleIsIgnoreArmor.isOn, _toggleIsIgnoreToughness.isOn);
+            if (_isHorde)
+            {
+                _damageItems[^1].Initialize(damageText, penetrationText, _toggleIsWarp.isOn, _toggleIsIgnoreArmor.isOn, _toggleIsIgnoreToughness.isOn, _inputDamageHorde.text);
+            }
+            else
+            {
+                _damageItems[^1].Initialize(placeText, damageText, penetrationText, _toggleIsWarp.isOn, _toggleIsIgnoreArmor.isOn, _toggleIsIgnoreToughness.isOn);
+            }            
+            
             _damageItems[^1].ChooseThis += RemoveItem;
             //LayoutRebuilder.ForceRebuildLayoutImmediate(_contentForDamageItems as RectTransform);
         }
