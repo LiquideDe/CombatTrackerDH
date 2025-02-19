@@ -3,8 +3,6 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Linq;
-using static UnityEditor.Progress;
-using UnityEngine.TextCore.Text;
 
 namespace CombarTracker
 {
